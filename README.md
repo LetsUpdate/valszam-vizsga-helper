@@ -1,16 +1,16 @@
-# Valradar 📡
+# ValszamVizsgaHelper 📡
 
 **Interaktív valószínűségszámítás vizsga feladatfelismerő és segédlet** az **Óbudai Egyetem Neumann János Informatikai Kar (OE NIK)** hallgatóinak.
 
 > Valószínűségszámítás és matematikai statisztika kollokvium / vizsga felkészülés — mérnökinformatikus szak.
 
-🔗 **Élő verzió:** _GitHub Pages link (lásd a repo Settings → Pages alatt)._
+🔗 **Élő verzió:** https://letsupdate.github.io/valszam-vizsga-helper/
 
 ---
 
 ## Mi ez?
 
-A **Valradar** egy önálló, egyetlen HTML-fájlból álló tanulósegéd, ami abban segít,
+A **ValszamVizsgaHelper** egy önálló, egyetlen HTML-fájlból álló tanulósegéd, ami abban segít,
 hogy egy vizsgafeladatról **azonnal felismerd, milyen eloszlás vagy próba tartozik hozzá**,
 és emlékeztet a tipikus buktatókra. Nincs build, nincs telepítés — csak nyisd meg a böngészőben.
 
