@@ -95,6 +95,34 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,sans-seri
 .pri-2{color:#c0922f}
 .pri-1{color:var(--text2);opacity:.7}
 
+/* ── Tanulási út ── */
+.lp-lead{font-size:14px;font-weight:700;line-height:1.5;padding:12px 14px;background:var(--bg2);border-radius:10px;border-left:4px solid #e0a500;margin-bottom:14px}
+.lp-h{font-size:13px;font-weight:800;letter-spacing:.4px;text-transform:uppercase;color:var(--text2);margin:18px 0 8px;display:flex;align-items:center;gap:7px}
+.lp-card{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:12px 14px;margin-bottom:10px}
+.lp-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px}
+.lp-fam{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:11px 13px}
+.lp-fam b{display:block;font-size:13px;margin-bottom:4px}
+.lp-fam span{font-size:11.5px;color:var(--text2);line-height:1.5}
+.lp-step{display:flex;gap:10px;padding:9px 0;border-bottom:1px solid var(--border)}
+.lp-step:last-child{border-bottom:none}
+.lp-num{flex:0 0 24px;height:24px;border-radius:50%;background:#e0a500;color:#1a1a1a;font-weight:800;font-size:12px;display:flex;align-items:center;justify-content:center}
+.lp-step div{font-size:12.5px;line-height:1.5}
+.lp-tbl{width:100%;border-collapse:collapse;font-size:12px;margin-bottom:4px}
+.lp-tbl th,.lp-tbl td{padding:6px 9px;border:1px solid var(--border);text-align:left;vertical-align:top;line-height:1.45}
+.lp-tbl th{background:var(--bg3);font-weight:700}
+.lp-btn{display:inline-block;margin-top:6px;padding:5px 12px;border-radius:7px;border:1px solid var(--border);background:var(--bg3);color:var(--text);font-size:11.5px;font-weight:600;cursor:pointer}
+.lp-btn:hover{border-color:var(--text2)}
+.lp-bar{height:10px;border-radius:6px;background:var(--bg3);overflow:hidden;margin:6px 0 4px}
+.lp-bar i{display:block;height:100%;background:linear-gradient(90deg,#7BAE24,#1D9E75);transition:width .3s}
+.lp-prog{font-size:12px;font-weight:700;color:var(--text2)}
+.lp-row{display:flex;align-items:center;gap:9px;padding:7px 9px;border:1px solid var(--border);border-radius:8px;margin-bottom:5px;background:var(--bg2)}
+.lp-row.done{opacity:.62}
+.lp-row.done .lp-name{text-decoration:line-through}
+.lp-row input{width:17px;height:17px;flex:0 0 auto;cursor:pointer;accent-color:#1D9E75}
+.lp-name{flex:1;font-size:12.5px;font-weight:600;cursor:pointer}
+.lp-name:hover{color:var(--text2)}
+.lp-row .pri{flex:0 0 auto}
+
 /* ── Paraméterek ── */
 .ptable{width:100%;border-collapse:collapse;margin-top:4px;font-size:11.5px}
 .ptable td{padding:3px 6px;border-bottom:1px solid var(--border);vertical-align:top;line-height:1.4}
@@ -256,6 +284,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,sans-seri
   <div class="tab"        data-pane="kviz"      onclick="sw('kviz')">🎯 Kvíz</div>
   <div class="tab"        data-pane="tabla"     onclick="sw('tabla')">📐 Táblázat</div>
   <div class="tab"        data-pane="reszletes" onclick="sw('reszletes')">📖 Részletes</div>
+  <div class="tab"        data-pane="tanul"     onclick="sw('tanul')">🎓 Tanulási út</div>
   <button id="themeTog" class="theme-tog" onclick="toggleTheme()" title="Sötét / világos mód" aria-label="Téma váltása">🌙</button>
   <a class="gh-link" href="https://github.com/LetsUpdate/valszam-vizsga-helper" target="_blank" rel="noopener" title="Forráskód a GitHubon" aria-label="GitHub repó">
     <svg viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
@@ -270,6 +299,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,sans-seri
 <div id="pk" class="pane"></div>
 <div id="pt" class="pane"></div>
 <div id="pr" class="pane"></div>
+<div id="pu" class="pane"></div>
 
 <div id="modal" class="modal">
   <div class="mbd" onclick="closeMo()"></div>
@@ -680,7 +710,7 @@ function closeMo(){
 }
 
 // ─── Tabs ─────────────────────────────────────────────────────────────────────
-const PANES={gyors:'pg',felismero:'pf',parok:'pp',kviz:'pk',tabla:'pt',reszletes:'pr'};
+const PANES={gyors:'pg',felismero:'pf',parok:'pp',kviz:'pk',tabla:'pt',reszletes:'pr',tanul:'pu'};
 function sw(name){
   document.querySelectorAll('.tab').forEach(el=>el.classList.toggle('active',el.dataset.pane===name));
   document.querySelectorAll('.pane').forEach(el=>el.classList.toggle('active',el.id===PANES[name]));
@@ -907,6 +937,84 @@ function buildTabla(){
     </div>`;
 }
 
+// ─── Tanulási út + haladáskövető ────────────────────────
+const PROG_KEY='valszam_haladas';
+function getProg(){try{return JSON.parse(localStorage.getItem(PROG_KEY))||{};}catch(e){return {};}}
+function togDone(id){const p=getProg();if(p[id])delete p[id];else p[id]=true;localStorage.setItem(PROG_KEY,JSON.stringify(p));const r=document.getElementById('lprow-'+id);if(r)r.classList.toggle('done',!!p[id]);renderProg();}
+function renderProg(){
+  const p=getProg();const done=T.filter(t=>p[t.id]).length;const all=T.length;
+  const pct=all?Math.round(done/all*100):0;
+  const bar=document.getElementById('lpBar');if(bar)bar.style.width=pct+'%';
+  const lbl=document.getElementById('lpProg');if(lbl)lbl.textContent=`${done} / ${all} típus kész — ${pct}%`;
+}
+const LAYERS=[
+  {lvl:3,t:'🔴 Mag — ezt vasból',d:'Önmagában közel viszi az átmenőt.'},
+  {lvl:2,t:'🟠 Gyakori — erre építs',d:'Ezekkel van meg biztosan a 20+.'},
+  {lvl:1,t:'🟡 Ráadás — ha a mag stabil',d:'Csak a biztos pont megszerzése után.'},
+];
+function buildTanulas(){
+  const p=getProg();
+  let h='';
+  h+=`<div class="lp-lead">Nem 14 különálló dolgot tanulsz, hanem <b>3 családot → rétegenként fontosság szerint</b>, és minden típust ugyanazzal a 4-elemű kártyával raksz a fejedbe.</div>`;
+
+  // 1. Térkép
+  h+=`<div class="lp-h">🗺️ 1. A térkép — előbb a váz</div>`;
+  h+=`<div class="lp-grid">`;
+  for(const c of CATS){
+    const names=T.filter(t=>t.cat===c.id).map(t=>t.name.replace(/ \[.*\]/,'')).join(' · ');
+    h+=`<div class="lp-fam"><b>${c.lbl}</b><span>${names}</span></div>`;
+  }
+  h+=`</div><button class="lp-btn" onclick="sw('felismero')">🧭 Nyisd meg a Felismerő fát →</button>`;
+
+  // 2. FKKB
+  h+=`<div class="lp-h">🃏 2. Minden típusra ugyanaz a 4 kártya — „FKKB”</div>`;
+  h+=`<div class="lp-card">
+    <div class="lp-step"><div class="lp-num">F</div><div><b>Felismerés</b> — 2-3 kulcsszó, amitől beugrik (pl. „visszatevéssel” → Binomiális).</div></div>
+    <div class="lp-step"><div class="lp-num">K</div><div><b>Képlet</b> — az 1 fő képlet, semmi több először.</div></div>
+    <div class="lp-step"><div class="lp-num">K</div><div><b>Kata (recept)</b> — a lépések sorrendje.</div></div>
+    <div class="lp-step"><div class="lp-num">B</div><div><b>Bukta</b> — az 1 tipikus csapda (pl. Φ(−x)=1−Φ(x)).</div></div>
+  </div><button class="lp-btn" onclick="sw('reszletes')">📖 Minden típusnál ott az FKKB →</button>`;
+
+  // 3. Hurok
+  h+=`<div class="lp-h">🔁 3. A tanulási hurok — minden ülés ugyanígy (~30-40 perc)</div>`;
+  h+=`<div class="lp-card">
+    <div class="lp-step"><div class="lp-num">1</div><div><b>Bemelegítés (2 perc):</b> végigkattintod a Felismerő fát, <i>hangosan</i> megnevezed a típust.</div></div>
+    <div class="lp-step"><div class="lp-num">2</div><div><b>1 új típus mélyen:</b> elolvasod az FKKB kártyát + <b>kézzel</b> megoldod a mintapéldáját.</div></div>
+    <div class="lp-step"><div class="lp-num">3</div><div><b>Aktív felidézés:</b> Kvíz a <i>már tanult</i> típusokra — nem olvasol, felidézel!</div></div>
+    <div class="lp-step"><div class="lp-num">4</div><div><b>Hibajavítás:</b> amit elrontasz, 1 mondatban felírod magadnak.</div></div>
+  </div><button class="lp-btn" onclick="sw('kviz')">🎯 Ugorj a Kvízre →</button>`;
+
+  // 4. Ütemterv
+  h+=`<div class="lp-h">📅 4. Ütemterv (példa, 2 hét)</div>`;
+  h+=`<table class="lp-tbl"><tr><th>Napok</th><th>Mit</th></tr>
+    <tr><td>1–3.</td><td>A 3 ⭐⭐⭐ <b>mag</b> (Normális, Hipotézisvizsgálat, CHT…)</td></tr>
+    <tr><td>4–7.</td><td>A ⭐⭐ <b>gyakori</b> típusok</td></tr>
+    <tr><td>8–10.</td><td>A ⭐ <b>ráadás</b> típusok</td></tr>
+    <tr><td>11–14.</td><td>Vegyes <b>Kvíz</b> + régi vizsgák, gyenge pontok pótlása</td></tr>
+  </table>`;
+
+  // 5. Checklist
+  h+=`<div class="lp-h">✅ 5. Haladáskövető</div>`;
+  h+=`<div class="lp-card"><div class="lp-bar"><i id="lpBar"></i></div><div class="lp-prog" id="lpProg"></div></div>`;
+  for(const L of LAYERS){
+    const items=T.filter(t=>(t.fontos?t.fontos.lvl:0)===L.lvl);
+    if(!items.length) continue;
+    h+=`<div class="lp-h" style="font-size:12px;margin:14px 0 6px">${L.t} <span style="font-weight:500;text-transform:none;letter-spacing:0">— ${L.d}</span></div>`;
+    for(const t of items){
+      const dn=p[t.id]?' done':'';
+      h+=`<div class="lp-row${dn}" id="lprow-${t.id}">
+        <input type="checkbox" ${p[t.id]?'checked':''} onchange="togDone('${t.id}')" aria-label="Kész">
+        <span class="lp-name" onclick="openMo('${t.id}')">${t.name}</span>
+        <span class="pri pri-${t.fontos.lvl}">${stars(t.fontos.lvl)}</span>
+      </div>`;
+    }
+  }
+  h+=`<p class="hint">A pipák a böngésződben mentődnek (localStorage) — újratöltés után is megmaradnak.</p>`;
+
+  document.getElementById('pu').innerHTML=h;
+  renderProg();
+}
+
 // ─── Init ───────────────────────────────────────────────
 buildQuick();
 buildAcc();
@@ -914,6 +1022,7 @@ buildTree();
 buildPairs();
 buildQuiz();
 buildTabla();
+buildTanulas();
 document.addEventListener('keydown',e=>{if(e.key==='Escape')closeMo();});
 </script>
 </body>

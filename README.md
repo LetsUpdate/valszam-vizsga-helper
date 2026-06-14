@@ -22,6 +22,8 @@ hogy egy vizsgafeladatról **azonnal felismerd, milyen eloszlás vagy próba tar
 - 🎯 **Kvíz** — gyakorló kérdések magyarázattal.
 - 📐 **Táblázat** — Φ, u, t és e⁻ᵏ kritikus értékek referenciatáblái.
 - 📖 **Részletes** — minden típus képletekkel, kulcsszavakkal és kidolgozott mintapéldával.
+- 🎓 **Tanulási út** — felépíthető tanulási rendszer: rétegek fontosság szerint, FKKB-kártya, tanulási hurok, 2 hetes ütemterv és mentett (localStorage) haladáskövető checklist.
+- 🌙 **Sötét / világos mód** — váltógomb a fejlécben (a rendszerbeállítást követi, vagy kézzel állítható).
 
 ## Témakörök
 
@@ -43,6 +45,7 @@ rendereli (CDN-ről). Nincs szükség internetkapcsolat nélküli telepítésre,
 | `index.html` | Átirányító a feladatfelismerőre (GitHub Pages kezdőlap). |
 | `assets/valszam_osszefoglalo.md` | Vizsga-összefoglaló: 13 eloszlás/próba típus, fontossági sorrendben. |
 | `assets/valszam_feladatgyujtemeny.md` | Feladatgyűjtemény valós vizsgapéldákkal. |
+| `assets/valszam_tanulasi_terv.md` | Tanulási rendszer: rétegek, FKKB-kártya, hurok, 2 hetes ütemterv, checklist. |
 | `assets/docs/projekt_dokumentacio.md` | Projektdokumentáció. |
 
 ## Jogi megjegyzés
