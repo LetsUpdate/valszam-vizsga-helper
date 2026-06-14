@@ -1,0 +1,861 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Valradar — Valószínűségszámítás vizsga segédlet | Óbudai Egyetem NIK</title>
+<meta name="description" content="Valradar: interaktív valószínűségszámítás és matematikai statisztika vizsga feladatfelismerő és segédlet az Óbudai Egyetem Neumann János Informatikai Kar (OE NIK) hallgatóinak. Eloszlások, hipotézisvizsgálat, kvíz és kritikus értékek.">
+<meta name="keywords" content="valószínűségszámítás, matematikai statisztika, valszám vizsga, valszám segédlet, valszám feladatok, Óbudai Egyetem, OE, NIK, Neumann János Informatikai Kar, mérnökinformatikus, vizsga felkészülés, eloszlások, hipotézisvizsgálat, Poisson, binomiális, normális eloszlás, t-próba, u-próba">
+<meta name="author" content="Valradar">
+<meta property="og:title" content="Valradar — Valószínűségszámítás vizsga segédlet | Óbudai Egyetem NIK">
+<meta property="og:description" content="Interaktív valszám feladatfelismerő és vizsga segédlet az Óbudai Egyetem Neumann János Informatikai Kar (OE NIK) hallgatóinak.">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="hu_HU">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.js"></script>
+<style>
+:root{--bg:#fff;--bg2:#f4f5f7;--bg3:#eceef1;--text:#1a1a1a;--text2:#606878;--border:#dde0e7;--modal-ov:rgba(0,0,0,.45)}
+@media(prefers-color-scheme:dark){:root{--bg:#0f1117;--bg2:#181c24;--bg3:#1e2330;--text:#dce0eb;--text2:#7a8499;--border:#272d3d;--modal-ov:rgba(0,0,0,.7)}}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,sans-serif;background:var(--bg);color:var(--text);font-size:13px}
+
+/* ── Tabs ── */
+.tabs{display:flex;flex-wrap:wrap;gap:4px;padding:10px 12px 0}
+.tab{padding:6px 16px;border-radius:8px 8px 0 0;border:1px solid var(--border);border-bottom:none;background:var(--bg2);color:var(--text2);cursor:pointer;font-size:12px;font-weight:600;transition:all .15s;user-select:none}
+.tab.active{background:var(--text);color:var(--bg);border-color:var(--text)}
+.pane{display:none;padding:12px;border-top:2px solid var(--text)}
+.pane.active{display:block}
+
+/* ── Category ── */
+.cat{font-size:10px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:var(--text2);margin:14px 0 6px;padding-left:2px}
+.cat:first-child{margin-top:0}
+
+/* ── Quick grid ── */
+.qgrid{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.qcard{border-radius:8px;border:1px solid var(--border);overflow:hidden;cursor:pointer;transition:transform .12s,box-shadow .12s}
+.qcard:hover{transform:translateY(-2px);box-shadow:0 4px 14px rgba(0,0,0,.13)}
+.qcard:active{transform:translateY(0)}
+.qhead{display:flex;align-items:center;gap:8px;padding:7px 10px;font-size:12px;font-weight:600}
+.qbody{padding:7px 10px 9px;background:var(--bg)}
+.kwr{display:flex;flex-wrap:wrap;gap:4px;margin-bottom:5px}
+.kw{font-size:11px;font-weight:500;padding:2px 7px;border-radius:12px}
+.trap{font-size:11px;color:var(--text2);line-height:1.45}
+.trap b,.trap strong{color:var(--text)}
+.dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.hint{font-size:10px;color:var(--text2);text-align:right;margin-top:8px;opacity:.7}
+
+/* ── Modal ── */
+.modal{position:fixed;inset:0;z-index:999;display:flex;align-items:center;justify-content:center;padding:16px;pointer-events:none;opacity:0;transition:opacity .18s}
+.modal.open{opacity:1;pointer-events:auto}
+.mbd{position:absolute;inset:0;background:var(--modal-ov);backdrop-filter:blur(3px);cursor:pointer}
+.mbox{position:relative;background:var(--bg);border:1px solid var(--border);border-radius:12px;width:100%;max-width:700px;max-height:88vh;overflow-y:auto;z-index:1;transform:scale(.95) translateY(8px);transition:transform .18s}
+.modal.open .mbox{transform:scale(1) translateY(0)}
+.modal-close{position:sticky;float:right;top:10px;right:10px;margin-right:10px;background:var(--bg2);border:1px solid var(--border);border-radius:50%;width:26px;height:26px;cursor:pointer;font-size:13px;color:var(--text2);display:flex;align-items:center;justify-content:center;z-index:2;flex-shrink:0}
+.modal-close:hover{color:var(--text);background:var(--bg3)}
+.mhead{display:flex;align-items:center;gap:10px;padding:14px 16px 12px;font-size:15px;font-weight:600;border-radius:12px 12px 0 0;position:sticky;top:0;z-index:1;border-bottom:1px solid var(--border)}
+.mhead .dot{width:12px;height:12px}
+.mbody{padding:14px 16px 20px}
+
+/* ── Detail sections ── */
+.ds{margin-bottom:13px}
+.ds:last-child{margin-bottom:0}
+.dl{font-size:10px;font-weight:700;letter-spacing:.6px;text-transform:uppercase;color:var(--text2);margin-bottom:4px}
+.dc{font-size:12.5px;line-height:1.55;color:var(--text)}
+.d2{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:12px}
+
+/* ── Formula block ── */
+.fblock{background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:6px 14px;margin-top:4px}
+.frow{padding:5px 0;border-bottom:1px solid var(--border)}
+.frow:last-child{border-bottom:none}
+.flabel{font-size:10px;color:var(--text2);margin-bottom:1px;line-height:1.3}
+.fmath{font-size:.92em}
+.katex-display{margin:.1em 0!important;text-align:left!important}
+.katex-display>.katex{text-align:left!important}
+.katex{font-size:1em}
+
+/* ── Buktatók ── */
+.blist{list-style:none;padding:0}
+.blist li{font-size:12px;line-height:1.45;padding:3px 0 3px 18px;position:relative}
+.blist li::before{content:"⚠️";position:absolute;left:0;top:4px;font-size:10px}
+
+/* ── Hook ── */
+.hook{font-size:12px;font-weight:600;font-style:italic;padding:7px 10px;background:var(--bg2);border-radius:6px;border-left:3px solid;line-height:1.45;margin-top:4px}
+
+/* ── Vizsga-fontosság badge ── */
+.pri{font-size:11px;letter-spacing:1.5px;white-space:nowrap}
+.pri-3{color:#e0a500}
+.pri-2{color:#c0922f}
+.pri-1{color:var(--text2);opacity:.7}
+
+/* ── Paraméterek ── */
+.ptable{width:100%;border-collapse:collapse;margin-top:4px;font-size:11.5px}
+.ptable td{padding:3px 6px;border-bottom:1px solid var(--border);vertical-align:top;line-height:1.4}
+.ptable tr:last-child td{border-bottom:none}
+.ptable .psym{font-family:'Courier New',monospace;font-size:12px;font-weight:600;white-space:nowrap;width:1%;padding-right:10px}
+.ptable .pdesc{color:var(--text2)}
+
+/* ── Accordion ── */
+.aitm{border:1px solid var(--border);border-radius:8px;margin-bottom:6px;overflow:hidden}
+.ahead{display:flex;align-items:center;gap:9px;padding:9px 12px;cursor:pointer;user-select:none;font-size:13px;font-weight:600;transition:filter .15s}
+.ahead:hover{filter:brightness(.96)}
+.chv{margin-left:auto;font-size:10px;color:var(--text2);transition:transform .2s}
+.aitm.open .chv{transform:rotate(90deg)}
+.abody{display:none;padding:12px 14px 14px;border-top:1px solid var(--border);background:var(--bg2)}
+.aitm.open .abody{display:block}
+
+/* ── Kereső ── */
+.search{width:100%;padding:9px 12px;border:1px solid var(--border);border-radius:9px;background:var(--bg2);color:var(--text);font-size:13px;margin-bottom:12px}
+.search:focus{outline:none;border-color:var(--text2)}
+.search::placeholder{color:var(--text2);opacity:.8}
+.catgrp:not(:first-child){margin-top:14px}
+
+/* ── Döntési fa (felismerő) ── */
+.tree{max-width:640px;margin:0 auto}
+.tctrl{display:flex;gap:8px;margin-bottom:14px;align-items:center;flex-wrap:wrap}
+.tbtn{padding:5px 12px;border:1px solid var(--border);border-radius:7px;background:var(--bg2);color:var(--text2);cursor:pointer;font-size:11px;font-weight:600}
+.tbtn:hover{color:var(--text);background:var(--bg3)}
+.tcrumb{font-size:11px;color:var(--text2);flex:1;min-width:120px;line-height:1.4}
+.tq{font-size:15px;font-weight:700;margin:4px 0 13px;line-height:1.4}
+.topt{display:block;width:100%;text-align:left;padding:12px 14px;margin-bottom:8px;border:1px solid var(--border);border-radius:9px;background:var(--bg2);color:var(--text);cursor:pointer;font-size:13px;font-weight:500;line-height:1.45;transition:transform .12s,border-color .12s}
+.topt:hover{border-color:var(--text2);transform:translateX(3px)}
+.tres{border:1px solid var(--border);border-radius:11px;overflow:hidden}
+.tres .rhead{display:flex;align-items:center;gap:10px;padding:13px 16px;font-size:16px;font-weight:700}
+.tres .rbody{padding:13px 16px;background:var(--bg)}
+.rbtns{display:flex;gap:8px;margin-top:13px;flex-wrap:wrap}
+.rbtn{padding:9px 16px;border-radius:8px;border:none;cursor:pointer;font-size:12px;font-weight:600}
+.rbtn-go{background:var(--text);color:var(--bg)}
+.rbtn-re{background:var(--bg2);color:var(--text2);border:1px solid var(--border)}
+
+/* ── Összetéveszthető párok ── */
+.ptitle{font-size:12px;color:var(--text2);margin-bottom:13px;line-height:1.5}
+.pair{border:1px solid var(--border);border-radius:11px;padding:12px 14px;margin-bottom:12px;background:var(--bg2)}
+.ptit{font-size:14px;font-weight:700;margin-bottom:11px}
+.pcols{display:grid;grid-template-columns:1fr auto 1fr;gap:10px;align-items:stretch}
+.pcol{border-radius:9px;padding:10px 12px}
+.pname{font-size:12.5px;font-weight:700;margin-bottom:5px}
+.pq{font-size:11.5px;line-height:1.45}
+.pvs{display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:var(--text2)}
+.pkey{font-size:11.5px;line-height:1.5;margin-top:11px;padding:8px 11px;background:var(--bg3);border-radius:7px}
+.plinks{display:flex;gap:8px;margin-top:11px;flex-wrap:wrap}
+.plink{padding:6px 12px;border-radius:7px;border:1px solid var(--border);background:var(--bg);color:var(--text);cursor:pointer;font-size:11px;font-weight:600}
+.plink:hover{background:var(--bg3)}
+
+/* ── Kvíz ── */
+.quiz{max-width:640px;margin:0 auto}
+.qztop{display:flex;align-items:center;gap:10px;margin-bottom:12px;flex-wrap:wrap}
+.qzprog{font-size:11px;color:var(--text2);font-weight:600}
+.qzscore{margin-left:auto;font-size:12px;font-weight:700}
+.qzq{border:1px solid var(--border);border-radius:11px;padding:14px 16px;background:var(--bg2);font-size:13.5px;line-height:1.55;margin-bottom:13px}
+.qzlabel{font-size:10px;font-weight:700;letter-spacing:.6px;text-transform:uppercase;color:var(--text2);margin-bottom:6px}
+.qzopt{display:block;width:100%;text-align:left;padding:11px 14px;margin-bottom:7px;border:1px solid var(--border);border-radius:9px;background:var(--bg);color:var(--text);cursor:pointer;font-size:13px;font-weight:600;line-height:1.4;transition:transform .12s,border-color .12s}
+.qzopt:hover:not(:disabled){border-color:var(--text2);transform:translateX(3px)}
+.qzopt:disabled{cursor:default}
+.qzopt.ok{background:#1d9e7522;border-color:#1D9E75}
+.qzopt.bad{background:#c0302022;border-color:#C03020}
+.qzfb{border-radius:9px;padding:11px 14px;margin-top:11px;font-size:12.5px;line-height:1.5}
+.qzfb.good{background:#1d9e7518;border:1px solid #1D9E75}
+.qzfb.wrong{background:#c0302018;border:1px solid #C03020}
+.qzbtns{display:flex;gap:8px;margin-top:11px;flex-wrap:wrap}
+.qzdone{text-align:center;padding:34px 16px}
+.qzdone .big{font-size:34px;font-weight:800;margin:10px 0}
+
+/* ── Táblázatok ── */
+.tbl-sec{margin-bottom:18px;max-width:560px}
+.tbl-h{font-size:12.5px;font-weight:700;margin-bottom:7px}
+.tbl-note{font-size:11px;color:var(--text2);margin-bottom:8px;line-height:1.5}
+.rtbl{width:100%;border-collapse:collapse;font-size:12px}
+.rtbl th,.rtbl td{padding:5px 8px;border:1px solid var(--border);text-align:center}
+.rtbl th{background:var(--bg2);font-weight:700;color:var(--text2)}
+.rtbl td.k{font-family:'Courier New',monospace;font-weight:600}
+.rtbl td.hl{background:var(--bg3);font-weight:700}
+
+/* ── Color palette ─────────────────────────────────────────────────────────── */
+/* teal=Bin blue=Poi green=Geo lime=Hyp
+   amber=Uni rose=Exp coral=Nor red=dens
+   purple=CI violet=HT indigo=Bay slate=CM gray=CLT */
+.c-teal  {background:#E1F5EE}.c-teal   .dot,.c-teal.dot  {background:#1D9E75}.c-teal  .kw{background:#9FE1CB;color:#085041}
+.c-blue  {background:#E6F1FB}.c-blue   .dot,.c-blue.dot  {background:#378ADD}.c-blue  .kw{background:#B5D4F4;color:#0C447C}
+.c-green {background:#EAF3DE}.c-green  .dot,.c-green.dot {background:#639922}.c-green .kw{background:#C0DD97;color:#173404}
+.c-lime  {background:#F0F8E0}.c-lime   .dot,.c-lime.dot  {background:#7BAE24}.c-lime  .kw{background:#CBEA8B;color:#2A4A00}
+.c-amber {background:#FAEEDA}.c-amber  .dot,.c-amber.dot {background:#BA7517}.c-amber .kw{background:#FAC775;color:#633806}
+.c-rose  {background:#FDE8EC}.c-rose   .dot,.c-rose.dot  {background:#D94060}.c-rose  .kw{background:#F5B0C0;color:#6B0020}
+.c-coral {background:#FAECE7}.c-coral  .dot,.c-coral.dot {background:#D85A30}.c-coral .kw{background:#F5C4B3;color:#4A1B0C}
+.c-red   {background:#FDE8E4}.c-red    .dot,.c-red.dot   {background:#C03020}.c-red   .kw{background:#F4B4A8;color:#580A00}
+.c-purple{background:#EEEDFE}.c-purple .dot,.c-purple.dot{background:#7F77DD}.c-purple.kw{background:#CECBF6;color:#26215C}
+.c-violet{background:#F2EFFE}.c-violet .dot,.c-violet.dot{background:#9060CC}.c-violet.kw{background:#CEBFF4;color:#2A1060}
+.c-indigo{background:#EBF0FD}.c-indigo .dot,.c-indigo.dot{background:#3D5DB0}.c-indigo.kw{background:#B4C6F0;color:#142060}
+.c-slate {background:#EEEEF2}.c-slate  .dot,.c-slate.dot {background:#6672A0}.c-slate .kw{background:#C0C6DC;color:#1E2A50}
+.c-gray  {background:#F1EFE8}.c-gray   .dot,.c-gray.dot  {background:#888780}.c-gray  .kw{background:#D3D1C7;color:#2C2C2A}
+
+@media(prefers-color-scheme:dark){
+  .c-teal  {background:#08504130}.c-teal  .kw{background:#085041;color:#9FE1CB}
+  .c-blue  {background:#0c447c30}.c-blue  .kw{background:#0C447C;color:#B5D4F4}
+  .c-green {background:#17340430}.c-green .kw{background:#27500A;color:#C0DD97}
+  .c-lime  {background:#2a4a0030}.c-lime  .kw{background:#3A6010;color:#CBEA8B}
+  .c-amber {background:#63380630}.c-amber .kw{background:#633806;color:#FAC775}
+  .c-rose  {background:#6b002030}.c-rose  .kw{background:#8B1030;color:#F5B0C0}
+  .c-coral {background:#4a1b0c30}.c-coral .kw{background:#712B13;color:#F5C4B3}
+  .c-red   {background:#58000030}.c-red   .kw{background:#6A1008;color:#F4B4A8}
+  .c-purple{background:#26215c30}.c-purple.kw{background:#3C3489;color:#CECBF6}
+  .c-violet{background:#2a106030}.c-violet.kw{background:#503080;color:#CEBFF4}
+  .c-indigo{background:#14206030}.c-indigo.kw{background:#243878;color:#B4C6F0}
+  .c-slate {background:#1e2a5030}.c-slate .kw{background:#3A4468;color:#C0C6DC}
+  .c-gray  {background:#2c2c2a30}.c-gray  .kw{background:#444441;color:#D3D1C7}
+  .qbody,.fblock,.ahead:hover,.hook{background:var(--bg3)}
+  .abody{background:var(--bg2)}
+  .mhead{background:var(--bg2)}
+}
+@media(max-width:500px){.qgrid,.d2{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+
+<div class="tabs">
+  <div class="tab active" data-pane="gyors"     onclick="sw('gyors')">📡 Gyors radar</div>
+  <div class="tab"        data-pane="felismero" onclick="sw('felismero')">🧭 Felismerő</div>
+  <div class="tab"        data-pane="parok"     onclick="sw('parok')">🔀 Mikor melyik?</div>
+  <div class="tab"        data-pane="kviz"      onclick="sw('kviz')">🎯 Kvíz</div>
+  <div class="tab"        data-pane="tabla"     onclick="sw('tabla')">📐 Táblázat</div>
+  <div class="tab"        data-pane="reszletes" onclick="sw('reszletes')">📖 Részletes</div>
+</div>
+<div id="pg" class="pane active">
+  <input id="q" class="search" type="text" oninput="filt()" placeholder="🔍 Keresés kulcsszóra (pl. „élettartam”, „selejt”, „legalább”)…">
+  <div id="pgGrid"></div>
+</div>
+<div id="pf" class="pane"></div>
+<div id="pp" class="pane"></div>
+<div id="pk" class="pane"></div>
+<div id="pt" class="pane"></div>
+<div id="pr" class="pane"></div>
+
+<div id="modal" class="modal">
+  <div class="mbd" onclick="closeMo()"></div>
+  <div class="mbox">
+    <button class="modal-close" onclick="closeMo()">✕</button>
+    <div id="mh" class="mhead"></div>
+    <div id="mb" class="mbody"></div>
+  </div>
+</div>
+
+<script>
+// ─── Dot colours ─────────────────────────────────────────────────────────────
+const DC={teal:'#1D9E75',blue:'#378ADD',green:'#639922',lime:'#7BAE24',
+          amber:'#BA7517',rose:'#D94060',coral:'#D85A30',red:'#C03020',
+          purple:'#7F77DD',violet:'#9060CC',indigo:'#3D5DB0',slate:'#6672A0',gray:'#888780'};
+
+// ─── Data ────────────────────────────────────────────────────────────────────
+const CATS=[
+  {id:'disc',lbl:'Diszkrét eloszlások'},
+  {id:'cont',lbl:'Folytonos eloszlások'},
+  {id:'stat',lbl:'Statisztika'},
+  {id:'base',lbl:'Valószínűségi alapok'},
+];
+
+const T=[
+  {
+    id:'bin',name:'Binomiális eloszlás',col:'teal',cat:'disc',
+    lenyeg:'n független kísérlet, mindegyiken p valószínűséggel „siker" — <b>hányszor lesz siker összesen?</b>',
+    kws:['n kísérletből','visszatevéssel','p valószínűséggel','hányszor / pontosan k','találati arány'],
+    trap:'Fix <b>n</b> és fix <b>p</b> kell — ha nincs megadva n → nem binomiális!',
+    formulas:[
+      {lbl:'Valószínűség',     tex:'P(X{=}k)=\\binom{n}{k}\\,p^k\\,(1-p)^{n-k}'},
+      {lbl:'Legalább k (komplementer)', tex:'P(X{\\geq}k)=1-\\sum_{i=0}^{k-1}P(X{=}i)'},
+      {lbl:'Várható érték',    tex:'E(X)=n\\cdot p'},
+      {lbl:'Szórásnégyzet',   tex:'D^2(X)=n\\cdot p\\cdot(1-p)'},
+    ],
+    buk:['C(n,k)=n!/(k!·(n−k)!) — ne hagyd el a kombinációt','E(X)=n·p, NEM csak p önmagában','Visszatevés nélkül → Hipergeometriai, nem Binomiális'],
+    kap:'Ha p kicsi és n nagy (n·p &lt; 5) → <b>Poisson közelítés</b> (λ=n·p). Visszatevés nélkül → Hipergeometriai.',
+    params:[{s:'n',d:'kísérletek száma (fix)'},{s:'p',d:'siker valószínűsége egyetlen kísérletben (0&lt;p&lt;1)'},{s:'k',d:'sikerek száma, amit vizsgálunk (0≤k≤n)'},{s:'1−p',d:'sikertelenség valószínűsége (q)'}],
+    hook:'„Dobálom n-szer az érmét p eséllyel — hányszor lesz fej?"',
+    fontos:{lvl:3,txt:'Top téma — szinte minden vizsgán, 3–6p'},
+    pelda:{q:'Érmét 10-szer dobunk (p=0,5). Mennyi P(X=6)?',sol:['P(X{=}6)=\\binom{10}{6}(0{,}5)^6(0{,}5)^4','=210\\cdot(0{,}5)^{10}\\approx 0{,}205']},
+  },
+  {
+    id:'poi',name:'Poisson eloszlás',col:'blue',cat:'disc',
+    lenyeg:'Adott időintervallumon <b>ritkán bekövetkező, véletlenszerű események száma</b>, ha az átlagos ráta (λ) ismert.',
+    kws:['átlagosan λ db','naponta / óránként / percenként','érkezik / fordul elő','ritka esemény'],
+    trap:'Ha más intervallumot kérdez → <b>λ-t arányosan átváltani!</b>',
+    formulas:[
+      {lbl:'Valószínűség',   tex:'P(X{=}k)=\\dfrac{\\lambda^k\\,e^{-\\lambda}}{k!}'},
+      {lbl:'Legalább k (komplementer)', tex:'P(X{\\geq}k)=1-\\sum_{i=0}^{k-1}P(X{=}i)'},
+      {lbl:'Várható érték',  tex:'E(X)=\\lambda'},
+      {lbl:'Szórásnégyzet', tex:'D^2(X)=\\lambda'},
+    ],
+    buk:['λ mindig az adott intervallumra vonatkozzon! Óránkénti adat, percet kérdez → λ/60','e⁻λ nem elhagyható — ne egyszerűsítsd ki','0! = 1, 1! = 1 — ellenőrizd a kis k értékeket'],
+    kap:'Binomiális közelítése ha n·p &lt; 5 és n nagy. Poisson folyamatban az <b>inter-event idő Exponenciális</b>.',
+    params:[{s:'λ',d:'átlagos eseményszám az adott időegységben (λ&gt;0)'},{s:'k',d:'vizsgált eseményszám (k=0,1,2,…)'},{s:'e',d:"Euler-szám ≈ 2,71828 — soha ne hagyd el az e⁻λ tagot"}],
+    hook:'„Átlagos forgalom ismert → hány jön adott idő alatt?"',
+    fontos:{lvl:3,txt:'Top téma — 2020 óta ~minden vizsgán, 3–4p'},
+    pelda:{q:'λ=2 hiba/perc. Mennyi P(X=4)?',sol:['P(X{=}4)=\\dfrac{2^4 e^{-2}}{4!}','=\\dfrac{16\\cdot 0{,}1353}{24}\\approx 0{,}090']},
+  },
+  {
+    id:'geo',name:'Geometriai eloszlás',col:'green',cat:'disc',
+    lenyeg:'Addig ismételjük a kísérletet amíg először sikerül — <b>hányadik kísérletben következik be az első siker?</b>',
+    kws:['addig amíg','először következik be','hányadik kísérletben','első siker sorszáma'],
+    trap:'k = a <b>sikeres</b> kísérlet sorszáma — nem az előtte lévő sikerteleneké!',
+    formulas:[
+      {lbl:'Valószínűség',   tex:'P(X{=}k)=(1-p)^{k-1}\\cdot p'},
+      {lbl:'Várható érték',  tex:'E(X)=\\dfrac{1}{p}'},
+      {lbl:'Túlélési fv.',   tex:'P(X>k)=(1-p)^{k}'},
+    ],
+    buk:['k = SIKERES kísérlet sorszáma (1,2,3,...), nem a sikertelenség száma','E(X)=1/p — ha p=0,2 → átlag 5. kísérlet','P(X≥k)=(1−p)^(k−1) vs P(X>k)=(1−p)^k — egy kitevőnyi különbség'],
+    kap:'Speciális binomiális eset — az első siker sorszáma. Ha véges és visszatevés nélkül → más típus.',
+    params:[{s:'p',d:'siker valószínűsége egyetlen kísérletben'},{s:'k',d:'a sikeres kísérlet sorszáma (k=1,2,3,…)'},{s:'1−p',d:'sikertelenség valószínűsége; (1−p)^(k−1) = ennyi sikertelenség előzi meg'}],
+    hook:'„Dobálom a kockát AMÍG hatost nem dobok — hányadik dobásnál?"',
+    fontos:{lvl:1,txt:'Ritkábban kérdezik'},
+    pelda:{q:'p=0,2 esélyű siker. P(X=3) és E(X)?',sol:['P(X{=}3)=(0{,}8)^2\\cdot 0{,}2=0{,}128','E(X)=\\dfrac{1}{0{,}2}=5']},
+  },
+  {
+    id:'hyp',name:'Hipergeometriai eloszlás',col:'lime',cat:'disc',
+    lenyeg:'Véges N elemű populációból <b>visszatevés nélkül</b> n darabot húzunk — hány „speciális" (selejt/piros/hibás) kerül a mintába?',
+    kws:['visszatevés nélkül','N elemből n-t húzunk','M selejt / speciális','véges sokaság'],
+    trap:'N, M, n, k ne keveredjenek — mindig írd le mi mit jelöl!',
+    formulas:[
+      {lbl:'Valószínűség', tex:'P(X{=}k)=\\dfrac{\\dbinom{M}{k}\\dbinom{N\\!-\\!M}{n\\!-\\!k}}{\\dbinom{N}{n}}'},
+      {lbl:'Várható érték',tex:'E(X)=\\dfrac{n\\cdot M}{N}'},
+    ],
+    buk:['N,M,n,k azonosítása az első lépés — ha eltéveszted, minden rossz','Ha n/N < 0,05 → Binomiális is elég közelítés (p=M/N)','Számlálón: k selejt ÉS n−k jó elem — mindkét kombinációs tényező kell'],
+    kap:'Binomiális = visszatevéssel; Hipergeometriai = visszatevés nélkül. Ha n/N → 0, a kettő közelít.',
+    params:[{s:'N',d:'teljes populáció mérete'},{s:'M',d:'speciális (selejt/piros/hibás) elemek száma a populációban'},{s:'n',d:'mintaméret (ennyi elemet húzunk visszatevés nélkül)'},{s:'k',d:'speciális elemek száma a mintában (0≤k≤min(M,n))'}],
+    hook:'„100 golyóból 20 piros, 10-et húzok visszatevés nélkül — hány piros?"',
+    fontos:{lvl:1,txt:'Ritkábban kérdezik'},
+    pelda:{q:'100 golyó, 20 piros; 10-et húzunk visszatevés nélkül. P(3 piros) és E(X)?',sol:['P(X{=}3)=\\dfrac{\\binom{20}{3}\\binom{80}{7}}{\\binom{100}{10}}','E(X)=\\dfrac{10\\cdot 20}{100}=2']},
+  },
+  {
+    id:'uni',name:'Egyenletes eloszlás [a, b]',col:'amber',cat:'cont',
+    lenyeg:'Az [a, b] intervallumon <b>minden pont egyforma valószínűségű</b> — nincs kitüntetett érték.',
+    kws:['egyenletesen oszlik el','[a, b] intervallum','minimum / maximum megadott','véletlenszerűen az intervallumban'],
+    trap:'P(X ∈ [c,d]) = <b>(d−c)/(b−a)</b> — szimplán hosszarány, nem kell integrálni!',
+    formulas:[
+      {lbl:'Sűrűségfüggvény', tex:'f(x)=\\dfrac{1}{b-a},\\quad x\\in[a,b]'},
+      {lbl:'Eloszlásfüggvény', tex:'F(x)=\\dfrac{x-a}{b-a}'},
+      {lbl:'Várható érték',    tex:'E(X)=\\dfrac{a+b}{2}'},
+      {lbl:'Szórásnégyzet',   tex:'D^2(X)=\\dfrac{(b-a)^2}{12}'},
+    ],
+    buk:['D²(X)=(b−a)²/12 — NEM (b−a)/12','Ne keverd a normálissal — nincs haranggörbe!','P(c≤X≤d)=(d−c)/(b−a), hosszarány — nincs integrálás'],
+    kap:'Legegyszerűbb folytonos eloszlás. Ha f(x)=konstans az intervallumon → egyenletes.',
+    params:[{s:'a',d:'az intervallum bal végpontja (minimum)'},{s:'b',d:'az intervallum jobb végpontja (maximum)'},{s:'x',d:'vizsgált érték, x ∈ [a,b]'}],
+    hook:'„Pontosan annyira valószínű 3 percet várni mint 7 percet."',
+    fontos:{lvl:1,txt:'Ritkábban kérdezik'},
+    pelda:{q:'X egyenletes [0, 10]-en. P(3≤X≤7) és E(X)?',sol:['P(3{\\le}X{\\le}7)=\\dfrac{7-3}{10-0}=0{,}4','E(X)=\\dfrac{0+10}{2}=5']},
+  },
+  {
+    id:'exp',name:'Exponenciális eloszlás',col:'rose',cat:'cont',
+    lenyeg:'Két egymást követő véletlen esemény <b>között eltelt idő eloszlása</b>. Memóriátlan: a jövő nem függ a múlttól.',
+    kws:['között eltelt idő','várakozási idő','élettartam','memóriátlan','átlagosan E(X) ideig'],
+    trap:'λ = 1/E(X) — ha átlag 50 perc → <b>λ = 1/50</b>, NEM 50!',
+    formulas:[
+      {lbl:'Sűrűségfüggvény',  tex:'f(x)=\\lambda\\,e^{-\\lambda x}'},
+      {lbl:'Eloszlásfüggvény', tex:'F(x)=1-e^{-\\lambda x}'},
+      {lbl:'Paraméter',        tex:'\\lambda=\\dfrac{1}{E(X)}'},
+      {lbl:'Várható érték',    tex:'E(X)=\\dfrac{1}{\\lambda},\\quad D^2(X)=\\dfrac{1}{\\lambda^2}'},
+      {lbl:'Memóriátlanság',   tex:'P(X>s{+}t\\mid X>s)=P(X>t)'},
+    ],
+    buk:['λ=1/E(X) — ha E(X)=50 → λ=1/50; ne fordítsd meg!','F(x) kell a valószínűséghez, nem f(x)','Memóriátlanság: P(X&gt;s+t|X&gt;s)=P(X&gt;t) — pl. P(X&gt;15|X&gt;10)=P(X&gt;5)'],
+    kap:'<b>Poisson ↔ Exponenciális:</b> Poisson adja HÁNY esemény → Exponenciális adja a SZÜNET hosszát köztük. Ugyanaz a folyamat, két oldala.',
+    params:[{s:'λ',d:'intenzitásparaméter = 1/E(X) = átlagos eseményszám időegységenként'},{s:'E(X)',d:'átlagos várakozási idő = 1/λ (pl. 50 perc → λ=1/50)'},{s:'x',d:'vizsgált időtartam (x≥0)'}],
+    hook:'„Ha Poisson = HÁNY esemény → Exponenciális = MENNYI IDŐ köztük."',
+    fontos:{lvl:2,txt:'Visszatérő típus (a 2014-es kollokvium F1)'},
+    pelda:{q:'Átlagos várakozás E(X)=50 perc. λ és P(X>50)?',sol:['\\lambda=\\dfrac{1}{50}','P(X>50)=e^{-50/50}=e^{-1}\\approx 0{,}368']},
+  },
+  {
+    id:'nor',name:'Normális eloszlás',col:'coral',cat:'cont',
+    lenyeg:'Szimmetrikus haranggörbe, m (várható érték) körül koncentrálva, σ (szórás) szélességgel.',
+    kws:['normális eloszlású','várható értéke m','szórása σ','Φ-táblázat','haranggörbe'],
+    trap:'<b>Φ(−x) = 1 − Φ(x)</b> — negatív z-nél mindig alkalmazd!',
+    formulas:[
+      {lbl:'Standardizálás', tex:'X^*=\\dfrac{X-m}{\\sigma}'},
+      {lbl:'CDF',            tex:'P(X<a)=\\Phi\\!\\left(\\dfrac{a-m}{\\sigma}\\right)'},
+      {lbl:'Jobb oldal',     tex:'P(X>a)=1-\\Phi\\!\\left(\\dfrac{a-m}{\\sigma}\\right)'},
+      {lbl:'Szimmetria',     tex:'\\Phi(-x)=1-\\Phi(x)'},
+      {lbl:'3σ-szabály',     tex:'P(|X-m|<3\\sigma)\\approx0{,}997'},
+    ],
+    buk:['Φ(−x)=1−Φ(x) szimmetria — negatív z-nél kötelező alkalmazni','σ = szórás, σ² = szórásnégyzet — ne cseréld fel a képletben','Összegnél: D²(X₁+X₂)=σ₁²+σ₂² (varianciák adódnak össze, szórások NEM!)'],
+    kap:'CHT: n db független változó összege → Normális (n≥30). Binomiális → Normális ha n·p>5 és n(1−p)>5.',
+    params:[{s:'m',d:'várható érték = a haranggörbe csúcspontja'},{s:'σ',d:'szórás = a görbe szélességét adja meg (σ&gt;0)'},{s:'σ²',d:'szórásnégyzet = varianciák összeadódnak, szórások NEM'},{s:'X*',d:'standardizált változó = (X−m)/σ ~ N(0,1)'},{s:'Φ(z)',d:'standard normális CDF — táblázatból olvasható le'}],
+    hook:'„Természet kedvence — magasság, tömeg, mérési hiba mind normális."',
+    fontos:{lvl:3,txt:'Top téma — szinte minden vizsgán, 4–6p'},
+    pelda:{q:'X~N(50, 10²). Mennyi P(X>60)?',sol:['P(X>60)=1-\\Phi\\!\\left(\\dfrac{60-50}{10}\\right)','=1-\\Phi(1)=1-0{,}8413=0{,}159']},
+  },
+  {
+    id:'dens',name:'Adott sűrűségfüggvény f(x)',col:'red',cat:'cont',
+    lenyeg:'f(x) közvetlenül adott → <b>C konstans meghatározása</b> integrállal, majd E(X), D²(X) és valószínűségek.',
+    kws:['f(x) = C·... adott','x ∈ [a, b]','C meghatározása','sűrűségfüggvény adott'],
+    trap:'Az (a) rész MINDIG C kiszámítása — <b>ingyen 4 pont</b>, ne hagyd ki!',
+    formulas:[
+      {lbl:'Normálás',       tex:'\\int_a^b f(x)\\,dx=1\\;\\Rightarrow\\;C'},
+      {lbl:'Várható érték',  tex:'E(X)=\\int_a^b x\\,f(x)\\,dx'},
+      {lbl:'E(X²)',          tex:'E(X^2)=\\int_a^b x^2\\,f(x)\\,dx'},
+      {lbl:'Szórásnégyzet',  tex:'D^2(X)=E(X^2)-[E(X)]^2'},
+      {lbl:'Valószínűség',   tex:'P(X\\in[c,d])=\\int_c^d f(x)\\,dx'},
+    ],
+    buk:['C meghatározása mindig az (a) rész — egyszerű integrál','D²(X)=E(X²)−[E(X)]² — NEM [E(X)]² egyedül','Ha f(x)=állandó → Egyenletes; ha f(x)=λe^(−λx) → Exponenciális'],
+    kap:'Általánosítja az összes folytonos eloszlást. Ha felismered a formát → átmehet konkrét típusba.',
+    params:[{s:'C',d:'normáló konstans — meghatározása: C = 1 / ∫f₀(x)dx ahol f(x)=C·f₀(x)'},{s:'[a,b]',d:'az eloszlás értelmezési tartománya'},{s:'f(x)',d:'sűrűségfüggvény — integrálja adja a valószínűséget'}],
+    hook:'„Ingyen 4 pont: az (a) rész mindig C = 1 / ∫f(x)dx."',
+    fontos:{lvl:3,txt:'Top téma — 2022 óta önálló F2, 8–16p'},
+    pelda:{q:'f(x)=C·x², x∈[0,3]. C és E(X)?',sol:['\\int_0^3 Cx^2\\,dx=C\\cdot 9=1\\Rightarrow C=\\tfrac{1}{9}','E(X)=\\int_0^3\\dfrac{x^3}{9}\\,dx=\\dfrac{81}{36}=2{,}25']},
+  },
+  {
+    id:'ci',name:'Konfidencia-intervallum',col:'purple',cat:'stat',
+    lenyeg:'A populáció ismeretlen paraméterét (m, p) <b>intervallummal becsüljük</b> adott megbízhatósági szinten.',
+    kws:['X%-os megbízhatósággal','intervallumbecslés','határozzuk meg az intervallumot','1−ε szintű'],
+    trap:'Ismeretlen σ + n&lt;30 → <b>t-eloszlás</b> (f=n−1), nem u-próba!',
+    formulas:[
+      {lbl:'Ismert σ (u-próba)', tex:'\\bar{x}\\pm u_{\\varepsilon/2}\\cdot\\dfrac{\\sigma}{\\sqrt{n}}'},
+      {lbl:'Ismeretlen σ (t)',   tex:'\\bar{x}\\pm t_{\\varepsilon/2}\\cdot\\dfrac{s^*}{\\sqrt{n}},\\quad f=n-1'},
+      {lbl:'Arány becslése',     tex:'\\hat{p}\\pm u_{\\varepsilon/2}\\sqrt{\\dfrac{\\hat{p}(1-\\hat{p})}{n}}'},
+    ],
+    buk:['95% megbízhatóság → ε=0,05 → u_{0,025}=1,96 (táblázatból)','Ismeretlen σ + n&lt;30 → t-próba, f=n−1 szabadsági fok','s* (korrigált) ≠ s (tap.): (s*)²=n/(n−1)·s²'],
+    kap:'Hipotézisvizsgálattal <b>duális</b>: ha a becsülni kívánt érték nem esik a KI-be → H₀ elvethető ugyanolyan α-szinten.',
+    params:[{s:'n',d:'mintaméret'},{s:'x̄',d:'mintaátlag (a minta számtani közepe)'},{s:'σ',d:'populációs szórás (ha ismert → u-próba)'},{s:'s*',d:'korrigált tapasztalati szórás (ha σ ismeretlen → t-próba)'},{s:'ε',d:'hibavalószínűség (pl. ε=0,05 → 95% megbízhatóság); u_{ε/2} táblázatból'}],
+    hook:'„Nem tudjuk pontosan, de 95%-osan ebben az intervallumban van."',
+    fontos:{lvl:2,txt:'Fontos — a hipotézisvizsgálattal duális'},
+    pelda:{q:'n=100, x̄=20, σ=5. 95%-os konfidencia-intervallum?',sol:['20\\pm u_{0{,}025}\\dfrac{5}{\\sqrt{100}}=20\\pm 1{,}96\\cdot 0{,}5','=20\\pm 0{,}98\\Rightarrow[19{,}02;\\,20{,}98]']},
+  },
+  {
+    id:'ht',name:'Hipotézisvizsgálat (t / u-próba)',col:'violet',cat:'stat',
+    lenyeg:'Mintaadatból döntünk: <b>igaz-e az állítás a populációra</b> adott szignifikanciaszinten?',
+    kws:['azt állítják / döntse el','szignifikanciaszinten','H₀ / H₁','normális mintából'],
+    trap:'„legalább/legfeljebb" → <b>egyoldali</b>; „egyenlő-e" → <b>kétoldali</b>.',
+    formulas:[
+      {lbl:'1. Mintaátlag',        tex:'\\bar{x}=\\dfrac{\\sum x_i}{n}'},
+      {lbl:'2. Korrigált szórás',  tex:'(s^*)^2=\\dfrac{\\sum x_i^2-\\frac{(\\sum x_i)^2}{n}}{n-1}'},
+      {lbl:'3. t-próbastatisztika',  tex:'t=\\dfrac{(\\bar{x}-\\mu_0)\\,\\sqrt{n}}{s^*},\\quad f=n-1'},
+      {lbl:'u-próba (ismert σ)', tex:'u=\\dfrac{(\\bar{x}-\\mu_0)\\,\\sqrt{n}}{\\sigma}'},
+      {lbl:'Döntés (kétoldali)', tex:'|t|>t_{\\alpha/2}\\;\\Rightarrow\\;H_0\\text{ elvethető}'},
+      {lbl:'Döntés (egyoldali)', tex:'t>t_{\\alpha}\\;\\text{vagy}\\;t<-t_{\\alpha}'},
+    ],
+    buk:['H₀ tartalmazza az egyenlőséget (≥,≤,=); H₁ az egyenlőtlenséget','Egyoldali: kritikus érték t_α; kétoldali: t_{α/2}','Ismeretlen σ + n&lt;30 → t-próba; n≥30 → u-próba is elfogadható'],
+    kap:'Konfidencia-intervallummal duális. Páros összehasonlítás → különbségek t-próbája.',
+    params:[{s:'μ₀',d:'H₀-ban feltételezett populációs várható érték'},{s:'x̄',d:'mintaátlag (a minta számtani közepe)'},{s:'s*',d:'korrigált tapasztalati szórás'},{s:'n',d:'mintaméret'},{s:'α',d:'szignifikanciaszint (pl. α=0,05 = 5%); f=n−1 szabadsági fok t-próbánál'}],
+    hook:'„H₀ = ártatlanság vélelme — csak bizonyíték esetén vetjük el."',
+    fontos:{lvl:3,txt:'A legfontosabb — minden vizsgán, 8p (utolsó feladat)'},
+    pelda:{q:'n=100, Σxᵢ=3150, Σxᵢ²=102800, μ₀=30, α=0,05 (kétoldali).',sol:['\\bar{x}=\\dfrac{3150}{100}=31{,}5','(s^*)^2=\\dfrac{102800-\\frac{3150^2}{100}}{99}=36{,}1\\Rightarrow s^*\\approx 6{,}01','t=\\dfrac{(31{,}5-30)\\sqrt{100}}{6{,}01}\\approx 2{,}50','2{,}50>t_{0{,}025;99}\\approx 1{,}98\\Rightarrow H_0\\text{ elvethető}']},
+  },
+  {
+    id:'bay',name:'Feltételes valószínűség / Bayes',col:'indigo',cat:'base',
+    lenyeg:'Egy esemény valószínűsége, ha már tudjuk hogy egy másik bekövetkezett. Bayes = „megfordítás": okból következményre.',
+    kws:['feltéve hogy','ha már bekövetkezett','visszafelé kérdés','mi a valószínűsége hogy'],
+    trap:'<b>P(A|B) ≠ P(B|A)</b> — soha ne cseréld fel az irányokat!',
+    formulas:[
+      {lbl:'Feltételes',         tex:'P(A|B)=\\dfrac{P(A\\cap B)}{P(B)}'},
+      {lbl:'Teljes valószínűség',tex:'P(B)=\\sum_i P(B|A_i)\\cdot P(A_i)'},
+      {lbl:'Bayes-tétel',        tex:'P(A_i|B)=\\dfrac{P(B|A_i)\\cdot P(A_i)}{\\displaystyle\\sum_j P(B|A_j)\\cdot P(A_j)}'},
+    ],
+    buk:['P(A|B) ≠ P(B|A) — irányok felcserélése a leggyakoribb hiba','Bayes-nél a nevező a teljes valószínűség tétel — ne hagyd el','Az Aᵢ-k legyenek teljes rendszer: diszjunktak és unió = Ω'],
+    kap:'Teljes valószínűség tétel → Bayes (megfordítás). Ha A és B független → P(A|B)=P(A).',
+    params:[{s:'P(Aᵢ)',d:'prior valószínűség — mekkora eséllyel vagyunk az Aᵢ „okállapotban"'},{s:'P(B|Aᵢ)',d:'likelihood — mekkora eséllyel látjuk B-t, ha Aᵢ igaz'},{s:'P(B)',d:'a bizonyíték teljes valószínűsége (nevező = teljes valószínűség)'},{s:'P(Aᵢ|B)',d:'posterior valószínűség — amit keresünk (megfordítás)'}],
+    hook:'„Orvosi teszt pozitív → mennyi eséllyel beteg valójában? Bayes!"',
+    fontos:{lvl:2,txt:'Visszatérő típus'},
+    pelda:{q:'A₁ gyár 60% (2% selejt), A₂ gyár 40% (5% selejt). Selejt esetén P(A₁)?',sol:['P(B)=0{,}6\\cdot 0{,}02+0{,}4\\cdot 0{,}05=0{,}032','P(A_1|B)=\\dfrac{0{,}012}{0{,}032}=0{,}375']},
+  },
+  {
+    id:'csm',name:'Csebisev / Markov egyenlőtlenség',col:'slate',cat:'base',
+    lenyeg:'Eloszlás ismerete nélkül adnak <b>felső korlátot</b> valószínűségekre — mindig konzervatív, laza becslés.',
+    kws:['felső korlát / becsüld meg','eloszlás ismeretlen','P(|X−μ| ≥ ε)','legalább … valószínűséggel'],
+    trap:'Csak E(X)+X≥0 → <b>Markov</b>; E(X) ÉS D²(X) is → <b>Csebisev</b>.',
+    formulas:[
+      {lbl:'Markov (X≥0)',tex:'P(X\\geq a)\\leq\\dfrac{E(X)}{a}'},
+      {lbl:'Csebisev',    tex:'P(|X-\\mu|\\geq\\varepsilon)\\leq\\dfrac{D^2(X)}{\\varepsilon^2}'},
+      {lbl:'Átírva',      tex:'P(|X-\\mu|<\\varepsilon)\\geq 1-\\dfrac{D^2(X)}{\\varepsilon^2}'},
+    ],
+    buk:['Markov: X≥0 feltétel KÖTELEZŐ','Csebisev: mindkét oldali korlát (|X−μ|≥ε)','Felső korlátok — a valódi valószínűség kisebb is lehet'],
+    kap:'Ha az eloszlás ismert → pontosabb számítás lehetséges. Csebisev ↔ Nagy számok törvénye kapcsolat.',
+    params:[{s:'μ',d:'E(X) várható érték'},{s:'a',d:'küszöbérték Markov-nál (P(X≥a))'},{s:'ε',d:'eltérés mértéke Csebisev-nél (P(|X−μ|≥ε))'},{s:'D²(X)',d:'szórásnégyzet — Csebisev-hez szükséges'}],
+    hook:'„Ha nem tudjuk az eloszlást, Markov/Csebisev ad valamit — de laza."',
+    fontos:{lvl:1,txt:'Ritkábban kérdezik'},
+    pelda:{q:'E(X)=100, D²(X)=25. Becsüld P(|X−100|≥10)!',sol:['P(|X-100|\\ge 10)\\le\\dfrac{25}{10^2}=0{,}25']},
+  },
+  {
+    id:'clt',name:'Centrális határeloszlás tétel (CHT)',col:'gray',cat:'base',
+    lenyeg:'Sok független, azonos eloszlású változó <b>összege / átlaga közelítőleg Normális eloszlású</b>, az eredeti eloszlástól függetlenül.',
+    kws:['n darab összege / átlaga','n ≥ 30','közelítsd normálissal','nagy minta'],
+    trap:'Sₙ (összeg) vs X̄ (átlag) → <b>különböző szórás!</b> Ne cseréld fel.',
+    formulas:[
+      {lbl:'Összeg',          tex:'S_n\\sim N(n\\mu,\\;n\\sigma^2)'},
+      {lbl:'Összeg szórása',  tex:'\\sigma_{S_n}=\\sigma\\sqrt{n}'},
+      {lbl:'Átlag',           tex:'\\bar{X}\\sim N\\!\\left(\\mu,\\;\\dfrac{\\sigma^2}{n}\\right)'},
+      {lbl:'Átlag szórása',   tex:'\\sigma_{\\bar{X}}=\\dfrac{\\sigma}{\\sqrt{n}}'},
+      {lbl:'Standardizálás',  tex:'S_n^*=\\dfrac{S_n-n\\mu}{\\sigma\\sqrt{n}}'},
+    ],
+    buk:['Sₙ szórása σ√n; X̄ szórása σ/√n — ne cseréld','Ha maga az eloszlás normális → sima normális feladat, nem CHT','Ha „n darab összesen" vagy „átlaga" szerepel → CHT jelzője'],
+    kap:'Normális eloszlás generalizálása nagy n-re. Nagy n-es Binomiális is közelíthető normálissal ha n·p>5 és n·(1−p)>5.',
+    params:[{s:'μ',d:'egyes tagok várható értéke'},{s:'σ²',d:'egyes tagok szórásnégyzete'},{s:'n',d:'összegzett tagok száma (n≥30 az ökölszabály)'},{s:'Sₙ',d:'összeg = X₁+X₂+…+Xₙ; szórása σ√n'},{s:'X̄',d:'átlag = Sₙ/n; szórása σ/√n'}],
+    hook:'„Elég sok dobás összege mindig normálishoz tart — mindegy mi volt az eredeti eloszlás."',
+    fontos:{lvl:3,txt:'Top téma — a normálissal együtt gyakori, 4–6p'},
+    pelda:{q:'100 db tag, egyenként μ=10, σ=3. P(S₁₀₀>1050)?',sol:['S_{100}\\sim N(1000,\\;900),\\ \\sigma_S=30','P(S>1050)=1-\\Phi\\!\\left(\\tfrac{1050-1000}{30}\\right)=1-\\Phi(1{,}67)\\approx 0{,}048']},
+  },
+];
+
+// ─── KaTeX helper ─────────────────────────────────────────────────────────────
+function K(tex){
+  try{return katex.renderToString(tex,{throwOnError:false,displayMode:false});}
+  catch(e){return `<code>${tex}</code>`;}
+}
+// ─── Fontosság + mintapélda ─────────────────────────────────────
+function stars(lvl){return '★'.repeat(lvl);}
+function priBadge(t){
+  return t.fontos?`<span class="pri pri-${t.fontos.lvl}" style="margin-left:auto">${stars(t.fontos.lvl)}</span>`:'';
+}
+function priHTML(t){
+  if(!t.fontos) return '';
+  return `<div class="ds"><div class="dl">Vizsga-súly</div><div class="dc"><span class="pri pri-${t.fontos.lvl}">${stars(t.fontos.lvl)}</span> ${t.fontos.txt}</div></div>`;
+}
+function peldaHTML(t){
+  if(!t.pelda) return '';
+  const rows=t.pelda.sol.map(s=>`<div class="frow"><div class="fmath">${K(s)}</div></div>`).join('');
+  return `<div class="ds"><div class="dl">Mintapélda</div><div class="dc" style="margin-bottom:6px">${t.pelda.q}</div><div class="fblock">${rows}</div></div>`;
+}
+// ─── HTML builders ────────────────────────────────────────────────────────────
+function kwHTML(arr,col){
+  return arr.map(k=>`<span class="kw c-${col}">${k}</span>`).join('');
+}
+
+function formulaHTML(fs){
+  return fs.map(f=>`<div class="frow">
+    <div class="flabel">${f.lbl}</div>
+    <div class="fmath">${K(f.tex,true)}</div>
+  </div>`).join('');
+}
+
+function paramsHTML(params){
+  if(!params||!params.length) return '';
+  const rows=params.map(p=>`<tr><td class="psym">${p.s}</td><td class="pdesc">${p.d}</td></tr>`).join('');
+  return `<div class="ds"><div class="dl">Paraméterek</div><table class="ptable">${rows}</table></div>`;
+}
+
+function detailHTML(t){
+  const dc=DC[t.col]||'#888';
+  return `
+  <div class="ds"><div class="dl">Lényeg</div><div class="dc">${t.lenyeg}</div></div>
+  ${priHTML(t)}
+  <div class="ds"><div class="dl">Kulcsszavak</div><div class="kwr">${kwHTML(t.kws,t.col)}</div></div>
+  <div class="ds"><div class="dl">Képletek</div><div class="fblock">${formulaHTML(t.formulas)}</div></div>
+  ${paramsHTML(t.params)}
+  ${peldaHTML(t)}
+  <div class="d2">
+    <div>
+      <div class="ds"><div class="dl">Buktatók</div>
+        <ul class="blist">${t.buk.map(b=>`<li>${b}</li>`).join('')}</ul>
+      </div>
+    </div>
+    <div>
+      <div class="ds"><div class="dl">Összefüggés más típusokkal</div><div class="dc">${t.kap}</div></div>
+      <div class="ds" style="margin-top:10px"><div class="dl">Memória-hook</div>
+        <div class="hook c-${t.col}" style="border-color:${dc}">${t.hook}</div>
+      </div>
+    </div>
+  </div>`;
+}
+
+// ─── Quick grid ───────────────────────────────────────────────────────────────
+function buildQuick(){
+  let h='';
+  for(const cat of CATS){
+    const items=T.filter(t=>t.cat===cat.id);
+    if(!items.length) continue;
+    h+=`<div class="catgrp"><div class="cat">▸ ${cat.lbl}</div><div class="qgrid">`;
+    for(const t of items){
+      const s=(t.name+' '+t.kws.join(' ')+' '+t.trap).replace(/<[^>]+>/g,'').replace(/"/g,'').toLowerCase();
+      h+=`<div class="qcard" data-s="${s}" onclick="openMo('${t.id}')">
+        <div class="qhead c-${t.col}"><div class="dot c-${t.col}"></div>${t.name}${priBadge(t)}</div>
+        <div class="qbody">
+          <div class="kwr">${kwHTML(t.kws.slice(0,4),t.col)}</div>
+          <div class="trap">⚠️ ${t.trap}</div>
+        </div>
+      </div>`;
+    }
+    h+='</div></div>';
+  }
+  h+='<p class="hint" id="noRes" style="display:none">Nincs találat erre a kulcsszóra 🤷</p>';
+  h+='<p class="hint">Kattints egy kártyára a részletekért ↗</p>';
+  document.getElementById('pgGrid').innerHTML=h;
+}
+
+function filt(){
+  const q=document.getElementById('q').value.toLowerCase().trim();
+  let visible=0;
+  document.querySelectorAll('#pgGrid .qcard').forEach(c=>{
+    const ok=!q||c.dataset.s.includes(q);
+    c.style.display=ok?'':'none';
+    if(ok) visible++;
+  });
+  document.querySelectorAll('#pgGrid .catgrp').forEach(g=>{
+    const any=[...g.querySelectorAll('.qcard')].some(c=>c.style.display!=='none');
+    g.style.display=any?'':'none';
+  });
+  const nr=document.getElementById('noRes');
+  if(nr) nr.style.display=visible?'none':'';
+}
+
+// ─── Accordion ────────────────────────────────────────────────────────────────
+function buildAcc(){
+  let h='';
+  for(const t of T){
+    h+=`<div class="aitm" id="a-${t.id}">
+      <div class="ahead c-${t.col}" onclick="togAcc(this)">
+        <div class="dot c-${t.col}"></div>${t.name}<span class="chv">▶</span>
+      </div>
+      <div class="abody">${detailHTML(t)}</div>
+    </div>`;
+  }
+  document.getElementById('pr').innerHTML=h;
+}
+
+// ─── Modal ────────────────────────────────────────────────────────────────────
+function openMo(id){
+  const t=T.find(x=>x.id===id);
+  if(!t) return;
+  const mh=document.getElementById('mh');
+  mh.className=`mhead c-${t.col}`;
+  mh.innerHTML=`<div class="dot c-${t.col}" style="width:12px;height:12px;flex-shrink:0"></div>${t.name}`;
+  document.getElementById('mb').innerHTML=detailHTML(t);
+  document.getElementById('modal').classList.add('open');
+  document.body.style.overflow='hidden';
+}
+
+function closeMo(){
+  document.getElementById('modal').classList.remove('open');
+  document.body.style.overflow='';
+}
+
+// ─── Tabs ─────────────────────────────────────────────────────────────────────
+const PANES={gyors:'pg',felismero:'pf',parok:'pp',kviz:'pk',tabla:'pt',reszletes:'pr'};
+function sw(name){
+  document.querySelectorAll('.tab').forEach(el=>el.classList.toggle('active',el.dataset.pane===name));
+  document.querySelectorAll('.pane').forEach(el=>el.classList.toggle('active',el.id===PANES[name]));
+}
+
+function togAcc(head){head.parentElement.classList.toggle('open');}
+
+// ─── Döntési fa (felismerő) ──────────────────────────────────
+const TREE={
+  q:'Milyen jellegű a feladat?',
+  opts:[
+    {t:'🔢 Diszkrét — „hányszor / hány db / hányadik?”',go:{
+      q:'Pontosan mit kérdez?',
+      opts:[
+        {t:'Hányadik kísérletre jön az ELSŐ siker?',res:'geo'},
+        {t:'Hány ritka esemény adott idő alatt (átlag λ ismert)?',res:'poi'},
+        {t:'Hány siker n RÖGZÍTETT kísérletből / húzásból?',go:{
+          q:'Hogyan veszünk mintát?',
+          opts:[
+            {t:'Visszatevéssel / független próbák, állandó p',res:'bin'},
+            {t:'Visszatevés NÉLKÜL, véges N populációból',res:'hyp'},
+          ]}},
+      ]}},
+    {t:'📈 Folytonos — idő / hossz / súly / adott f(x)',go:{
+      q:'Mi van megadva?',
+      opts:[
+        {t:'f(x)=C·… explicit, és C-t kell meghatározni',res:'dens'},
+        {t:'Két esemény KÖZÖTT eltelt idő / élettartam / memóriátlan',res:'exp'},
+        {t:'[a,b]-n MINDEN érték egyformán valószínű',res:'uni'},
+        {t:'Haranggörbe / N(m,σ) / Φ-táblázat',res:'nor'},
+      ]}},
+    {t:'📊 Statisztika — minta alapján döntés / becslés',go:{
+      q:'Mi a cél?',
+      opts:[
+        {t:'Intervallumot becsülni adott megbízhatósággal',res:'ci'},
+        {t:'Eldönteni, igaz-e egy állítás (H₀ / H₁)',res:'ht'},
+      ]}},
+    {t:'🎲 Valószínűségi alap',go:{
+      q:'Mi a szituáció?',
+      opts:[
+        {t:'„Feltéve hogy B bekövetkezett” / okok megfordítása',res:'bay'},
+        {t:'Felső korlát, eloszlás ISMERETLEN (E(X) / D²(X) adott)',res:'csm'},
+        {t:'n db változó ÖSSZEGE / ÁTLAGA, n nagy → normális közelítés',res:'clt'},
+      ]}},
+  ]
+};
+let treePath=[];
+function buildTree(){treePath=[{node:TREE,label:null}];renderTree();}
+function treeReset(){buildTree();}
+function treeBack(){if(treePath.length>1){treePath.pop();renderTree();}}
+function treeGo(i){
+  const cur=treePath[treePath.length-1].node;
+  const opt=cur.opts[i];
+  treePath.push({node:opt.res?{res:opt.res}:opt.go,label:opt.t});
+  renderTree();
+}
+function renderTree(){
+  const cur=treePath[treePath.length-1].node;
+  const crumbs=treePath.slice(1).map(p=>p.label).join(' › ');
+  const ctrl=`<div class="tctrl">
+    <button class="tbtn" onclick="treeReset()">↺ Újrakezdés</button>
+    ${treePath.length>1?'<button class="tbtn" onclick="treeBack()">← Vissza</button>':''}
+    <span class="tcrumb">${crumbs||'Válassz egy irányt — pár kérdés, és megvan a típus.'}</span>
+  </div>`;
+  let body='';
+  if(cur.res){
+    const t=T.find(x=>x.id===cur.res);
+    body=`<div class="tres">
+      <div class="rhead c-${t.col}"><div class="dot c-${t.col}"></div>${t.name}</div>
+      <div class="rbody">
+        <div class="dc">${t.lenyeg}</div>
+        <div class="trap" style="margin-top:8px">⚠️ ${t.trap}</div>
+        <div class="rbtns">
+          <button class="rbtn rbtn-go" onclick="openMo('${t.id}')">Részletek + mintapélda →</button>
+          <button class="rbtn rbtn-re" onclick="treeReset()">↺ Új feladat</button>
+        </div>
+      </div>
+    </div>`;
+  }else{
+    body=`<div class="tq">${cur.q}</div>`;
+    body+=cur.opts.map((o,i)=>`<button class="topt" onclick="treeGo(${i})">${o.t}</button>`).join('');
+  }
+  document.getElementById('pf').innerHTML=`<div class="tree">${ctrl}${body}</div>`;
+}
+
+// ─── Összetéveszthető párok ──────────────────────────────────
+const PAIRS=[
+  {title:'Poisson ⟷ Exponenciális',
+    a:{id:'poi',label:'Poisson',q:'HÁNY esemény történik adott idő alatt?'},
+    b:{id:'exp',label:'Exponenciális',q:'MENNYI IDŐ telik el két esemény között?'},
+    key:'Ugyanaz a folyamat két oldala: Poisson = darabszám (diszkrét), Exponenciális = időköz (folytonos).'},
+  {title:'Binomiális ⟷ Hipergeometriai',
+    a:{id:'bin',label:'Binomiális',q:'Visszatevéssel húzol / független próbák, állandó p?'},
+    b:{id:'hyp',label:'Hipergeometriai',q:'Visszatevés NÉLKÜL, véges N populációból?'},
+    key:'Visszatevéssel → p állandó → Binomiális. Visszatevés nélkül → p húzásonként változik → Hipergeometriai.'},
+  {title:'t-próba ⟷ u-próba',
+    a:{id:'ht',label:'t-próba',q:'σ ISMERETLEN (s*-ot számolsz) és/vagy n<30?'},
+    b:{id:'ht',label:'u-próba',q:'σ ISMERT, vagy n≥30?'},
+    key:'Ismeretlen σ + kis minta → t-eloszlás (f=n−1). Ismert σ / nagy minta → u (standard normális).'},
+  {title:'Geometriai ⟷ Binomiális',
+    a:{id:'geo',label:'Geometriai',q:'HÁNYADIK próbára jön az ELSŐ siker?'},
+    b:{id:'bin',label:'Binomiális',q:'HÁNY siker n RÖGZÍTETT próbából?'},
+    key:'Geometriai: a sorszám a változó (n nincs rögzítve). Binomiális: a sikerek száma a változó (n fix).'},
+  {title:'Normális ⟷ CHT',
+    a:{id:'nor',label:'Normális',q:'EGY változó eleve normális eloszlású?'},
+    b:{id:'clt',label:'CHT',q:'SOK változó ÖSSZEGE / ÁTLAGA (n nagy)?'},
+    key:'CHT = közelítés sok tag összegére/átlagára. Egyetlen normális változó → sima normális feladat.'},
+  {title:'Markov ⟷ Csebisev',
+    a:{id:'csm',label:'Markov',q:'Csak E(X) ismert, és X ≥ 0?'},
+    b:{id:'csm',label:'Csebisev',q:'E(X) ÉS D²(X) is ismert?'},
+    key:'Markov: csak várható érték, X≥0, egyoldali korlát. Csebisev: szórásnégyzet is kell, |X−μ| eltérésre.'},
+];
+function buildPairs(){
+  const nm=id=>T.find(x=>x.id===id);
+  let h='<p class="ptitle">Ezt a 6 párt tévesztik össze a legtöbben — egy kérdés eldönti, melyik kell:</p>';
+  for(const p of PAIRS){
+    const ids=[...new Set([p.a.id,p.b.id])];
+    h+=`<div class="pair">
+      <div class="ptit">${p.title}</div>
+      <div class="pcols">
+        <div class="pcol c-${nm(p.a.id).col}"><div class="pname">${p.a.label}</div><div class="pq">${p.a.q}</div></div>
+        <div class="pvs">vs</div>
+        <div class="pcol c-${nm(p.b.id).col}"><div class="pname">${p.b.label}</div><div class="pq">${p.b.q}</div></div>
+      </div>
+      <div class="pkey">🔑 ${p.key}</div>
+      <div class="plinks">${ids.map(id=>`<button class="plink" onclick="openMo('${id}')">${nm(id).name} →</button>`).join('')}</div>
+    </div>`;
+  }
+  document.getElementById('pp').innerHTML=h;
+}
+
+// ─── Kvíz / felismerő gyakorló mód ───────────────────────────────────────────
+const QUIZ=[
+  {q:'Azt állítják, hogy egy futballista mérkőzésenként átlagosan legalább 8 km-t fut. 60 mérkőzés adatai: Σxᵢ=470, Σxᵢ²=3760. Döntse el 5%-os szinten!',id:'ht',opts:['ht','ci','nor','clt'],why:'Mintából (Σxᵢ, Σxᵢ²) döntünk egy állításról (H₀/H₁) → <b>hipotézisvizsgálat, t-próba</b>.'},
+  {q:'Egy telefonközpontba átlagosan 6 hívás érkezik percenként. Mennyi a valószínűsége, hogy egy percben legalább 8 hívás érkezik?',id:'poi',opts:['poi','exp','bin','geo'],why:'Ismert átlagos ráta (λ), adott időegység alatti <b>darabszám</b> → Poisson.'},
+  {q:'Egy kosaras 3-pontosokból 35%-os sikerességű. 10 kísérletből mennyi a valószínűsége, hogy legalább 4-et eltalál?',id:'bin',opts:['bin','hyp','poi','geo'],why:'Fix n=10 független próba, állandó p=0,35 → <b>Binomiális</b> (visszatevéssel).'},
+  {q:'A meccsenként szerzett pont normális eloszlású, várható értéke 23,7, szórása 5. Mennyi a valószínűsége, hogy egy szezonban 29-nél magasabb az átlag?',id:'nor',opts:['nor','clt','uni','exp'],why:'Egyetlen, eleve normális változó + Φ-táblázat → <b>Normális</b>.'},
+  {q:'f(x)=C·x², ha x∈[0,3], egyébként 0. Határozza meg C értékét, majd E(X)-et!',id:'dens',opts:['dens','uni','exp','nor'],why:'Explicit f(x)=C·… adott, C-t integrállal keressük → <b>Adott sűrűségfüggvény</b>.'},
+  {q:'Egy gép alkatrészeket gyárt, tömegük X~N(10, 9). 100 alkatrész összesített tömege meghaladja-e az 1050-et?',id:'clt',opts:['clt','nor','ht','ci'],why:'SOK tag ÖSSZEGE (n nagy) → <b>CHT</b>: Sₙ~N(nμ, nσ²).'},
+  {q:'Két busz között eltelt idő várható értéke 10 perc. Mennyi a valószínűsége, hogy 15 percnél többet kell várni a következőre?',id:'exp',opts:['exp','poi','uni','nor'],why:'Két esemény KÖZÖTT eltelt <b>idő</b> → Exponenciális (λ=1/E(X)).'},
+  {q:'Egy kockát dobálunk, amíg először hatost nem dobunk. Mennyi a valószínűsége, hogy pontosan a 4. dobásra sikerül?',id:'geo',opts:['geo','bin','poi','hyp'],why:'HÁNYADIK próbára jön az ELSŐ siker → <b>Geometriai</b>.'},
+  {q:'Egy 100 elemű szállítmányban 20 selejt van. 10 terméket veszünk ki visszatevés nélkül. Mennyi a valószínűsége, hogy pontosan 3 selejtes?',id:'hyp',opts:['hyp','bin','poi','geo'],why:'Véges N populációból visszatevés NÉLKÜL húzunk → <b>Hipergeometriai</b>.'},
+  {q:'Egy busz 0 és 10 perc között bármikor egyforma eséllyel érkezik. Mennyi a valószínűsége, hogy 3 és 7 perc között jön?',id:'uni',opts:['uni','exp','nor','dens'],why:'[a,b]-n minden érték egyforma eséllyel → <b>Egyenletes</b> (hosszarány).'},
+  {q:'Két gép gyárt: A gép a termékek 60%-át (2% selejt), B a 40%-át (5% selejt). Egy kiválasztott selejtes termékről mennyi az esélye, hogy az A gép gyártotta?',id:'bay',opts:['bay','hyp','bin','ht'],why:'Okot keresünk a következményből (selejt → melyik gép) → <b>Bayes</b>.'},
+  {q:'Egy minta alapján: n=100, x̄=20, σ=5. Adjon 95%-os megbízhatóságú becslést a várható értékre!',id:'ci',opts:['ci','ht','nor','clt'],why:'Ismeretlen paramétert INTERVALLUMMAL becslünk adott megbízhatósággal → <b>Konfidencia-intervallum</b>.'},
+  {q:'Egy valószínűségi változóról csak annyit tudunk: E(X)=100 és D²(X)=25. Adjon felső becslést P(|X−100|≥10) értékére!',id:'csm',opts:['csm','nor','clt','ht'],why:'Eloszlás ISMERETLEN, csak E(X) és D²(X) adott, felső korlát kell → <b>Csebisev</b>.'},
+  {q:'Egy csokoládégyárban percenként átlagosan 2 hibás termék keletkezik. Mennyi a valószínűsége, hogy egy adott percben pontosan 4 hibás termék van?',id:'poi',opts:['poi','bin','exp','geo'],why:'Ismert ráta (λ=2/perc), adott idő alatti darabszám → <b>Poisson</b>.'},
+  {q:'Egy érmét 10-szer dobunk fel (p=0,5). Mennyi a valószínűsége, hogy pontosan 6-szor lesz fej?',id:'bin',opts:['bin','geo','hyp','poi'],why:'Fix n=10 dobás, állandó p=0,5 → <b>Binomiális</b>.'},
+  {q:'Azt állítják, hogy egy kosárlabdázó meccsenként átlagosan legalább 27 pontot szerez. 100 meccs adatai: Σxᵢ=2680, Σxᵢ²=73240. Döntse el 5%-os szinten!',id:'ht',opts:['ht','ci','clt','nor'],why:'Mintából döntünk egy „legalább” állításról → <b>t-próba</b> (egyoldali).'},
+];
+let qzOrder=[],qzIdx=0,qzScore=0,qzAns=false,qzOpts=[],qzChoice=null;
+function shuffle(a){a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
+function loadQ(){if(qzIdx<qzOrder.length)qzOpts=shuffle(QUIZ[qzOrder[qzIdx]].opts);qzAns=false;qzChoice=null;}
+function buildQuiz(){qzOrder=shuffle(QUIZ.map((_,i)=>i));qzIdx=0;qzScore=0;loadQ();renderQuiz();}
+function quizReset(){buildQuiz();}
+function quizNext(){qzIdx++;loadQ();renderQuiz();}
+function quizAnswer(choice){if(qzAns)return;qzAns=true;qzChoice=choice;if(choice===QUIZ[qzOrder[qzIdx]].id)qzScore++;renderQuiz();}
+function renderQuiz(){
+  const pk=document.getElementById('pk');
+  if(qzIdx>=qzOrder.length){
+    const pct=Math.round(qzScore/qzOrder.length*100);
+    const msg=pct>=80?'kiváló! 🎯':pct>=50?'jó úton vagy 💪':'gyakorolj még 📚';
+    pk.innerHTML=`<div class="quiz"><div class="qzdone">
+      <div class="qzprog">Vége! Eredmény:</div>
+      <div class="big">${qzScore} / ${qzOrder.length}</div>
+      <div class="qzprog">${pct}% — ${msg}</div>
+      <div class="qzbtns" style="justify-content:center;margin-top:14px"><button class="rbtn rbtn-go" onclick="quizReset()">↺ Új kör</button></div>
+    </div></div>`;
+    return;
+  }
+  const item=QUIZ[qzOrder[qzIdx]];
+  const nm=id=>T.find(x=>x.id===id).name;
+  let opts='';
+  for(const id of qzOpts){
+    let cls='qzopt';
+    if(qzAns){if(id===item.id)cls+=' ok';else if(id===qzChoice)cls+=' bad';}
+    opts+=`<button class="${cls}" ${qzAns?'disabled':''} onclick="quizAnswer('${id}')">${nm(id)}</button>`;
+  }
+  let fb='';
+  if(qzAns){
+    const good=qzChoice===item.id;
+    fb=`<div class="qzfb ${good?'good':'wrong'}">${good?'✅ Helyes! ':'❌ Nem talált. A helyes válasz: <b>'+nm(item.id)+'</b>. '}${item.why}</div>
+    <div class="qzbtns">
+      <button class="rbtn rbtn-re" onclick="openMo('${item.id}')">Részletek + mintapélda →</button>
+      <button class="rbtn rbtn-go" onclick="quizNext()">${qzIdx+1<qzOrder.length?'Következő →':'Eredmény →'}</button>
+    </div>`;
+  }
+  pk.innerHTML=`<div class="quiz">
+    <div class="qztop"><span class="qzprog">${qzIdx+1} / ${qzOrder.length} kérdés</span><span class="qzscore">Pont: ${qzScore}</span></div>
+    <div class="qzq"><div class="qzlabel">Melyik típusú ez a feladat?</div>${item.q}</div>
+    ${opts}${fb}
+  </div>`;
+}
+
+// ─── Kritikus-érték segédlet ─────────────────────────────────────────────────
+function buildTabla(){
+  const phi=[['0,00','0,5000'],['0,50','0,6915'],['1,00','0,8413'],['1,28','0,8997'],['1,50','0,9332'],['1,645','0,9500'],['1,96','0,9750'],['2,00','0,9772'],['2,33','0,9901'],['2,50','0,9938'],['2,576','0,9950'],['3,00','0,9987']];
+  const uv=[['90%','0,05','1,645'],['95%','0,025','1,960'],['98%','0,01','2,326'],['99%','0,005','2,576']];
+  const tv=[['5','2,015','2,571'],['10','1,812','2,228'],['20','1,725','2,086'],['30','1,697','2,042'],['60','1,671','2,000'],['100','1,660','1,984'],['∞','1,645','1,960']];
+  const ex=[['e⁻¹','0,3679'],['e⁻²','0,1353'],['e⁻³','0,0498'],['e⁻⁴','0,0183'],['e⁻⁵','0,0067']];
+  const phiR=phi.map(r=>`<tr><td class="k">${r[0]}</td><td>${r[1]}</td></tr>`).join('');
+  const uR=uv.map(r=>`<tr><td>${r[0]}</td><td class="k">${r[1]}</td><td class="k hl">${r[2]}</td></tr>`).join('');
+  const tR=tv.map(r=>`<tr><td class="k">${r[0]}</td><td class="k">${r[1]}</td><td class="k">${r[2]}</td></tr>`).join('');
+  const exR=ex.map(r=>`<tr><td class="k">${r[0]}</td><td>${r[1]}</td></tr>`).join('');
+  document.getElementById('pt').innerHTML=`
+    <div class="tbl-sec">
+      <div class="tbl-h">Standard normális Φ(z) — eloszlásfüggvény</div>
+      <div class="tbl-note">Negatív z-re: <b>Φ(−z) = 1 − Φ(z)</b>. Pl. Φ(−1) = 1 − 0,8413 = 0,1587.</div>
+      <table class="rtbl"><tr><th>z</th><th>Φ(z)</th></tr>${phiR}</table>
+    </div>
+    <div class="tbl-sec">
+      <div class="tbl-h">Kritikus u-értékek (standard normális)</div>
+      <div class="tbl-note">Konfidencia-intervallumhoz / u-próbához (ismert σ, vagy n≥30).</div>
+      <table class="rtbl"><tr><th>Megbízhatóság</th><th>ε/2</th><th>u<sub>ε/2</sub></th></tr>${uR}</table>
+    </div>
+    <div class="tbl-sec">
+      <div class="tbl-h">Kritikus t-értékek (Student)</div>
+      <div class="tbl-note">t-próbához / konfidenciához, ha σ ismeretlen. f = n−1 szabadsági fok.</div>
+      <table class="rtbl"><tr><th>f = n−1</th><th>t<sub>0,05</sub> (egyoldali)</th><th>t<sub>0,025</sub> (kétoldali)</th></tr>${tR}</table>
+    </div>
+    <div class="tbl-sec">
+      <div class="tbl-h">Hasznos e<sup>−λ</sup> értékek (Poisson)</div>
+      <table class="rtbl"><tr><th>e<sup>−λ</sup></th><th>érték</th></tr>${exR}</table>
+    </div>`;
+}
+
+// ─── Init ───────────────────────────────────────────────
+buildQuick();
+buildAcc();
+buildTree();
+buildPairs();
+buildQuiz();
+buildTabla();
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeMo();});
+</script>
+</body>
+</html>
