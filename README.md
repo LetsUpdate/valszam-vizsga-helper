@@ -41,9 +41,9 @@ rendereli (CDN-ről). Nincs szükség internetkapcsolat nélküli telepítésre,
 |------|--------|
 | `valszam_feladatfelismero_v2.html` | Az interaktív feladatfelismerő (a fő eszköz). |
 | `index.html` | Átirányító a feladatfelismerőre (GitHub Pages kezdőlap). |
-| `valszam_osszefoglalo.md` | Vizsga-összefoglaló: 13 eloszlás/próba típus, fontossági sorrendben. |
-| `valszam_feladatgyujtemeny.md` | Feladatgyűjtemény valós vizsgapéldákkal. |
-| `docs/projekt_dokumentacio.md` | Projektdokumentáció. |
+| `assets/valszam_osszefoglalo.md` | Vizsga-összefoglaló: 13 eloszlás/próba típus, fontossági sorrendben. |
+| `assets/valszam_feladatgyujtemeny.md` | Feladatgyűjtemény valós vizsgapéldákkal. |
+| `assets/docs/projekt_dokumentacio.md` | Projektdokumentáció. |
 
 ## Jogi megjegyzés
 
