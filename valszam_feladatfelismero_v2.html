@@ -210,6 +210,37 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,sans-seri
   .abody{background:var(--bg2)}
   .mhead{background:var(--bg2)}
 }
+/* Kézi sötét mód (felülírja a világos rendszer-beállítást) */
+:root[data-theme="dark"] .c-teal  {background:#08504130}:root[data-theme="dark"] .c-teal  .kw{background:#085041;color:#9FE1CB}
+:root[data-theme="dark"] .c-blue  {background:#0c447c30}:root[data-theme="dark"] .c-blue  .kw{background:#0C447C;color:#B5D4F4}
+:root[data-theme="dark"] .c-green {background:#17340430}:root[data-theme="dark"] .c-green .kw{background:#27500A;color:#C0DD97}
+:root[data-theme="dark"] .c-lime  {background:#2a4a0030}:root[data-theme="dark"] .c-lime  .kw{background:#3A6010;color:#CBEA8B}
+:root[data-theme="dark"] .c-amber {background:#63380630}:root[data-theme="dark"] .c-amber .kw{background:#633806;color:#FAC775}
+:root[data-theme="dark"] .c-rose  {background:#6b002030}:root[data-theme="dark"] .c-rose  .kw{background:#8B1030;color:#F5B0C0}
+:root[data-theme="dark"] .c-coral {background:#4a1b0c30}:root[data-theme="dark"] .c-coral .kw{background:#712B13;color:#F5C4B3}
+:root[data-theme="dark"] .c-red   {background:#58000030}:root[data-theme="dark"] .c-red   .kw{background:#6A1008;color:#F4B4A8}
+:root[data-theme="dark"] .c-purple{background:#26215c30}:root[data-theme="dark"] .c-purple.kw{background:#3C3489;color:#CECBF6}
+:root[data-theme="dark"] .c-violet{background:#2a106030}:root[data-theme="dark"] .c-violet.kw{background:#503080;color:#CEBFF4}
+:root[data-theme="dark"] .c-indigo{background:#14206030}:root[data-theme="dark"] .c-indigo.kw{background:#243878;color:#B4C6F0}
+:root[data-theme="dark"] .c-slate {background:#1e2a5030}:root[data-theme="dark"] .c-slate .kw{background:#3A4468;color:#C0C6DC}
+:root[data-theme="dark"] .c-gray  {background:#2c2c2a30}:root[data-theme="dark"] .c-gray  .kw{background:#444441;color:#D3D1C7}
+:root[data-theme="dark"] .qbody,:root[data-theme="dark"] .fblock,:root[data-theme="dark"] .ahead:hover,:root[data-theme="dark"] .hook{background:var(--bg3)}
+:root[data-theme="dark"] .abody{background:var(--bg2)}
+:root[data-theme="dark"] .mhead{background:var(--bg2)}
+/* Kézi világos mód (felülírja a sötét rendszer-beállítást) — a fenti @media-t a világos alap-szabályok visszaállítják, mert specifikusabbak */
+:root[data-theme="light"] .c-teal  {background:#E1F5EE}:root[data-theme="light"] .c-teal  .kw{background:#9FE1CB;color:#085041}
+:root[data-theme="light"] .c-blue  {background:#E6F1FB}:root[data-theme="light"] .c-blue  .kw{background:#B5D4F4;color:#0C447C}
+:root[data-theme="light"] .c-green {background:#EAF3DE}:root[data-theme="light"] .c-green .kw{background:#C0DD97;color:#173404}
+:root[data-theme="light"] .c-lime  {background:#F0F8E0}:root[data-theme="light"] .c-lime  .kw{background:#CBEA8B;color:#2A4A00}
+:root[data-theme="light"] .c-amber {background:#FAEEDA}:root[data-theme="light"] .c-amber .kw{background:#FAC775;color:#633806}
+:root[data-theme="light"] .c-rose  {background:#FDE8EC}:root[data-theme="light"] .c-rose  .kw{background:#F5B0C0;color:#6B0020}
+:root[data-theme="light"] .c-coral {background:#FAECE7}:root[data-theme="light"] .c-coral .kw{background:#F5C4B3;color:#4A1B0C}
+:root[data-theme="light"] .c-red   {background:#FDE8E4}:root[data-theme="light"] .c-red   .kw{background:#F4B4A8;color:#580A00}
+:root[data-theme="light"] .c-purple{background:#EEEDFE}:root[data-theme="light"] .c-purple.kw{background:#CECBF6;color:#26215C}
+:root[data-theme="light"] .c-violet{background:#F2EFFE}:root[data-theme="light"] .c-violet.kw{background:#CEBFF4;color:#2A1060}
+:root[data-theme="light"] .c-indigo{background:#EBF0FD}:root[data-theme="light"] .c-indigo.kw{background:#B4C6F0;color:#142060}
+:root[data-theme="light"] .c-slate {background:#EEEEF2}:root[data-theme="light"] .c-slate .kw{background:#C0C6DC;color:#1E2A50}
+:root[data-theme="light"] .c-gray  {background:#F1EFE8}:root[data-theme="light"] .c-gray  .kw{background:#D3D1C7;color:#2C2C2A}
 @media(max-width:500px){.qgrid,.d2{grid-template-columns:1fr}}
 </style>
 </head>
@@ -247,9 +278,9 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,sans-seri
 // ─── Theme toggle ────────────────────────────────────────────────────────────
 function applyTheme(t){
   const r=document.documentElement;
-  if(t==='dark'||t==='light') r.setAttribute('data-theme',t); else r.removeAttribute('data-theme');
   const sysDark=window.matchMedia('(prefers-color-scheme:dark)').matches;
   const dark = t==='dark' || (t!=='light' && sysDark);
+  r.setAttribute('data-theme', dark?'dark':'light');
   const b=document.getElementById('themeTog'); if(b) b.textContent = dark?'☀️':'🌙';
 }
 function toggleTheme(){
