@@ -122,6 +122,12 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,sans-seri
 .lp-name{flex:1;font-size:12.5px;font-weight:600;cursor:pointer}
 .lp-name:hover{color:var(--text2)}
 .lp-row .pri{flex:0 0 auto}
+.lp-cue{display:flex;align-items:center;gap:8px;padding:7px 8px;border-radius:7px;cursor:pointer;transition:background .12s;flex-wrap:wrap}
+.lp-cue:hover{background:var(--bg3)}
+.lp-cue-kw{font-size:12px;font-style:italic;color:var(--text);flex:1 1 50%;min-width:140px}
+.lp-cue-arr{color:var(--text2);font-weight:700;flex:0 0 auto}
+.lp-cue-t{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:700;flex:1 1 40%;min-width:120px}
+.lp-cue-t .dot{width:8px;height:8px;flex:0 0 auto}
 
 /* ── Paraméterek ── */
 .ptable{width:100%;border-collapse:collapse;margin-top:4px;font-size:11.5px}
@@ -952,6 +958,29 @@ const LAYERS=[
   {lvl:2,t:'🟠 Gyakori — erre építs',d:'Ezekkel van meg biztosan a 20+.'},
   {lvl:1,t:'🟡 Ráadás — ha a mag stabil',d:'Csak a biztos pont megszerzése után.'},
 ];
+const CUES=[
+  {grp:'Diszkrét — „hányszor / hányadik?”',rows:[
+    {kw:'visszatevéssel, fix n és p',t:'Binomiális',id:'bin'},
+    {kw:'visszatevés nélkül, N elemből',t:'Hipergeometriai',id:'hyp'},
+    {kw:'hányadikra jön az ELSŐ siker',t:'Geometriai',id:'geo'},
+    {kw:'átlagosan λ db adott idő alatt',t:'Poisson',id:'poi'},
+  ]},
+  {grp:'Folytonos — „mennyi / mennyi idő?”',rows:[
+    {kw:'mennyi idő két esemény közt, élettartam',t:'Exponenciális',id:'exp'},
+    {kw:'haranggörbe, várható értéke m, szórása σ',t:'Normális',id:'nor'},
+    {kw:'adott f(x), C = ? meghatározása',t:'Sűrűségfüggvény f(x)',id:'dens'},
+    {kw:'[a, b]-n egyenletesen, minden pont egyforma',t:'Egyenletes',id:'uni'},
+  ]},
+  {grp:'Statisztika — „mintából következtetünk”',rows:[
+    {kw:'döntse el / szignifikanciaszinten / állítják',t:'Hipotézisvizsgálat',id:'ht'},
+    {kw:'X%-os megbízhatósággal, intervallumbecslés',t:'Konfidencia-intervallum',id:'ci'},
+  ]},
+  {grp:'Alapok — átszövik az egészet',rows:[
+    {kw:'feltéve hogy, visszafelé / megfordított kérdés',t:'Feltételes / Bayes',id:'bay'},
+    {kw:'n darab összege / átlaga, nagy n (≥30)',t:'CHT',id:'clt'},
+    {kw:'felső korlát, az eloszlás ismeretlen',t:'Csebisev / Markov',id:'csm'},
+  ]},
+];
 function buildTanulas(){
   const p=getProg();
   let h='';
@@ -966,8 +995,33 @@ function buildTanulas(){
   }
   h+=`</div><button class="lp-btn" onclick="sw('felismero')">🧭 Nyisd meg a Felismerő fát →</button>`;
 
+  // 2. Felismerő szótár — kulcsszó → típus
+  h+=`<div class="lp-h">🔑 2. Felismerő szótár — a kulcsszó dönt</div>`;
+  h+=`<div class="lp-card" style="padding:8px 10px">`;
+  h+=`<p style="font-size:11.5px;color:var(--text2);margin-bottom:8px;line-height:1.5">A feladat szövegében szinte mindig van egy <b>árulkodó szókapcsolat</b>. Ezt kösd a típushoz — a képlet már másodlagos. Kattints egy sorra a részletekért.</p>`;
+  for(const c of CUES){
+    h+=`<div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--text2);margin:10px 0 4px">${c.grp}</div>`;
+    for(const r of c.rows){
+      const t=T.find(x=>x.id===r.id);
+      h+=`<div class="lp-cue" onclick="openMo('${r.id}')">
+        <span class="lp-cue-kw">„${r.kw}”</span>
+        <span class="lp-cue-arr">→</span>
+        <span class="lp-cue-t"><span class="dot c-${t.col}"></span>${r.t}</span>
+      </div>`;
+    }
+  }
+  h+=`</div>`;
+
+  // 3. Összekeverhető párok — a 3 leghírhedtebb
+  h+=`<div class="lp-h">⚠️ 3. A 3 leggyakoribb csapda — egy mondatban</div>`;
+  h+=`<div class="lp-card">
+    <div class="lp-step"><div class="lp-num" style="background:#D85A30">P/E</div><div><b>Poisson = darab, Exponenciális = idő.</b> Ugyanaz a folyamat: Poisson „hány esemény", Exponenciális „mennyi idő köztük". λ = 1/E(X)!</div></div>
+    <div class="lp-step"><div class="lp-num" style="background:#3D5DB0">±√n</div><div><b>Összegnél σ√n, átlagnál σ/√n.</b> CHT: Sₙ-nél szorzol, X̄-nál osztasz — ne cseréld fel.</div></div>
+    <div class="lp-step"><div class="lp-num" style="background:#D94060">Φ−</div><div><b>Negatív z-nél: 1 mínusz.</b> Φ(−x) = 1 − Φ(x) — a Φ-tábla csak pozitív értékeket ad.</div></div>
+  </div><button class="lp-btn" onclick="sw('parok')">🔀 Több összekeverhető pár →</button>`;
+
   // 2. FKKB
-  h+=`<div class="lp-h">🃏 2. Minden típusra ugyanaz a 4 kártya — „FKKB”</div>`;
+  h+=`<div class="lp-h">🃏 4. Minden típusra ugyanaz a 4 kártya — „FKKB”</div>`;
   h+=`<div class="lp-card">
     <div class="lp-step"><div class="lp-num">F</div><div><b>Felismerés</b> — 2-3 kulcsszó, amitől beugrik (pl. „visszatevéssel” → Binomiális).</div></div>
     <div class="lp-step"><div class="lp-num">K</div><div><b>Képlet</b> — az 1 fő képlet, semmi több először.</div></div>
@@ -976,7 +1030,7 @@ function buildTanulas(){
   </div><button class="lp-btn" onclick="sw('reszletes')">📖 Minden típusnál ott az FKKB →</button>`;
 
   // 3. Hurok
-  h+=`<div class="lp-h">🔁 3. A tanulási hurok — minden ülés ugyanígy (~30-40 perc)</div>`;
+  h+=`<div class="lp-h">🔁 5. A tanulási hurok — minden ülés ugyanígy (~30-40 perc)</div>`;
   h+=`<div class="lp-card">
     <div class="lp-step"><div class="lp-num">1</div><div><b>Bemelegítés (2 perc):</b> végigkattintod a Felismerő fát, <i>hangosan</i> megnevezed a típust.</div></div>
     <div class="lp-step"><div class="lp-num">2</div><div><b>1 új típus mélyen:</b> elolvasod az FKKB kártyát + <b>kézzel</b> megoldod a mintapéldáját.</div></div>
@@ -985,7 +1039,7 @@ function buildTanulas(){
   </div><button class="lp-btn" onclick="sw('kviz')">🎯 Ugorj a Kvízre →</button>`;
 
   // 4. Ütemterv
-  h+=`<div class="lp-h">📅 4. Ütemterv (példa, 2 hét)</div>`;
+  h+=`<div class="lp-h">📅 6. Ütemterv (példa, 2 hét)</div>`;
   h+=`<table class="lp-tbl"><tr><th>Napok</th><th>Mit</th></tr>
     <tr><td>1–3.</td><td>A 3 ⭐⭐⭐ <b>mag</b> (Normális, Hipotézisvizsgálat, CHT…)</td></tr>
     <tr><td>4–7.</td><td>A ⭐⭐ <b>gyakori</b> típusok</td></tr>
@@ -994,7 +1048,7 @@ function buildTanulas(){
   </table>`;
 
   // 5. Checklist
-  h+=`<div class="lp-h">✅ 5. Haladáskövető</div>`;
+  h+=`<div class="lp-h">✅ 7. Haladáskövető</div>`;
   h+=`<div class="lp-card"><div class="lp-bar"><i id="lpBar"></i></div><div class="lp-prog" id="lpProg"></div></div>`;
   for(const L of LAYERS){
     const items=T.filter(t=>(t.fontos?t.fontos.lvl:0)===L.lvl);

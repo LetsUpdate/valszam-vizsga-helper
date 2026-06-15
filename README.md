@@ -22,7 +22,7 @@ hogy egy vizsgafeladatról **azonnal felismerd, milyen eloszlás vagy próba tar
 - 🎯 **Kvíz** — gyakorló kérdések magyarázattal.
 - 📐 **Táblázat** — Φ, u, t és e⁻ᵏ kritikus értékek referenciatáblái.
 - 📖 **Részletes** — minden típus képletekkel, kulcsszavakkal és kidolgozott mintapéldával.
-- 🎓 **Tanulási út** — felépíthető tanulási rendszer: rétegek fontosság szerint, FKKB-kártya, tanulási hurok, 2 hetes ütemterv és mentett (localStorage) haladáskövető checklist.
+- 🎓 **Tanulási út** — felépíthető tanulási rendszer: kattintható felismerő szótár (kulcsszó → típus), rétegek fontosság szerint, FKKB-kártya, tanulási hurok, 2 hetes ütemterv és mentett (localStorage) haladáskövető checklist.
 - 🌙 **Sötét / világos mód** — váltógomb a fejlécben (a rendszerbeállítást követi, vagy kézzel állítható).
 
 ## Témakörök

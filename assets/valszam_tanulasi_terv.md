@@ -28,7 +28,37 @@ Előbb a váz, hogy legyen hova akasztani a részleteket:
 
 👉 Eszköz: a **🧭 Felismerő** fül — ez maga a térkép.
 
-## 2. szint — Rétegek fontosság szerint (ne mindent egyszerre!)
+## 2. szint — Felismerő szótár (a kulcsszó dönt)
+
+A feladat szövegében szinte mindig van egy **árulkodó szókapcsolat**. Ezt kösd a
+típushoz — a képlet már másodlagos. Ez a vizsga legfontosabb készsége.
+
+| Ha ezt látod a szövegben… | …ez a típus |
+|---|---|
+| „visszatevés**sel**", fix n és p | **Binomiális** |
+| „visszatevés **nélkül**", N elemből | **Hipergeometriai** |
+| „**hányadik**ra jön az első siker" | **Geometriai** |
+| „átlagosan λ db adott idő alatt" | **Poisson** |
+| „mennyi **idő** két esemény közt", élettartam | **Exponenciális** |
+| haranggörbe, „várható értéke m, szórása σ" | **Normális** |
+| „adott f(x), C = ?" | **Sűrűségfüggvény f(x)** |
+| „[a, b]-n egyenletesen", minden pont egyforma | **Egyenletes** |
+| „döntse el / szignifikanciaszinten / azt állítják" | **Hipotézisvizsgálat** |
+| „X%-os megbízhatósággal", intervallumbecslés | **Konfidencia-intervallum** |
+| „feltéve hogy", visszafelé / megfordított kérdés | **Feltételes / Bayes** |
+| „n darab összege / átlaga", nagy n (≥30) | **CHT** |
+| „felső korlát", az eloszlás ismeretlen | **Csebisev / Markov** |
+
+> A tool **🎓 Tanulási út** füljén ez a szótár kattintható: a típusra koppintva
+> rögtön nyílik a részletes kártyája.
+
+## 3. szint — A 3 leggyakoribb csapda (egy mondatban)
+
+- **Poisson = darab, Exponenciális = idő.** Ugyanaz a folyamat két oldala; λ = 1/E(X)!
+- **Összegnél σ√n, átlagnál σ/√n.** CHT: Sₙ-nél szorzol, X̄-nál osztasz — ne cseréld fel.
+- **Negatív z-nél: 1 mínusz.** Φ(−x) = 1 − Φ(x) — a Φ-tábla csak pozitív értékeket ad.
+
+## 4. szint — Rétegek fontosság szerint (ne mindent egyszerre!)
 
 Az átmenőhöz (20/40) a mag sokszor elég:
 
@@ -38,7 +68,7 @@ Az átmenőhöz (20/40) a mag sokszor elég:
 | **🟠 Gyakori** ⭐⭐ | Exponenciális, Konfidencia-intervallum, Bayes | Ezekkel van meg biztosan a 20+. |
 | **🟡 Ráadás** ⭐ | Geometriai, Hipergeometriai, Egyenletes, Markov/Csebisev | Csak ha a mag már stabil. |
 
-## 3. szint — Minden típusra ugyanaz a 4 kártya (FKKB)
+## 5. szint — Minden típusra ugyanaz a 4 kártya (FKKB)
 
 Mindig pontosan ezt a négyet jegyzed meg egy típusról — semmi többet először:
 
@@ -49,7 +79,7 @@ Mindig pontosan ezt a négyet jegyzed meg egy típusról — semmi többet elős
 
 👉 A **📖 Részletes** fülön minden típusnál pont ez a 4 dolog ott van.
 
-## 4. szint — A tanulási hurok (minden ülés ugyanígy, ~30-40 perc)
+## 6. szint — A tanulási hurok (minden ülés ugyanígy, ~30-40 perc)
 
 1. **Bemelegítés (2 perc):** végigkattintod a Felismerő fát, *hangosan* megnevezed a típust.
 2. **1 új típus mélyen:** elolvasod az FKKB kártyát + **kézzel** megoldod a mintapéldáját.
