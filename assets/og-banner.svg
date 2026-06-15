@@ -1,0 +1,56 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630" font-family="Segoe UI, Helvetica, Arial, sans-serif">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0f172a"/>
+      <stop offset="1" stop-color="#1e293b"/>
+    </linearGradient>
+    <linearGradient id="curve" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#2dd4bf"/>
+      <stop offset="0.5" stop-color="#38bdf8"/>
+      <stop offset="1" stop-color="#818cf8"/>
+    </linearGradient>
+    <linearGradient id="fill" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#38bdf8" stop-opacity="0.45"/>
+      <stop offset="1" stop-color="#38bdf8" stop-opacity="0"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="1200" height="630" fill="url(#bg)"/>
+
+  <!-- subtle grid -->
+  <g stroke="#334155" stroke-width="1" opacity="0.35">
+    <line x1="0" y1="470" x2="1200" y2="470"/>
+    <line x1="150" y1="120" x2="150" y2="470"/>
+    <line x1="370" y1="120" x2="370" y2="470"/>
+    <line x1="590" y1="120" x2="590" y2="470"/>
+    <line x1="810" y1="120" x2="810" y2="470"/>
+    <line x1="1030" y1="120" x2="1030" y2="470"/>
+  </g>
+
+  <!-- bell curve fill (CDF area up to mean) -->
+  <path d="M 150 470
+           C 300 470, 360 460, 430 400
+           C 500 330, 540 200, 590 175
+           L 590 470 Z" fill="url(#fill)"/>
+
+  <!-- bell curve line -->
+  <path d="M 150 468
+           C 300 468, 360 458, 430 398
+           C 500 328, 555 178, 590 175
+           C 625 178, 700 328, 770 398
+           C 840 458, 900 468, 1050 468"
+        fill="none" stroke="url(#curve)" stroke-width="6" stroke-linecap="round"/>
+
+  <!-- mean line -->
+  <line x1="590" y1="175" x2="590" y2="470" stroke="#f1f5f9" stroke-width="2" stroke-dasharray="6 7" opacity="0.7"/>
+
+  <!-- title -->
+  <text x="80" y="560" fill="#f8fafc" font-size="62" font-weight="700">ValszamVizsgaHelper</text>
+  <text x="83" y="118" fill="#94a3b8" font-size="30" font-weight="600">Valószínűségszámítás &amp; statisztika · vizsga-segédlet</text>
+
+  <!-- subtitle -->
+  <text x="82" y="600" fill="#5eead4" font-size="28" font-weight="600">Óbudai Egyetem · NIK · feladatfelismerő + 13 eloszlás</text>
+
+  <!-- phi badge -->
+  <text x="1010" y="250" fill="#cbd5e1" font-size="120" font-weight="700" opacity="0.9" text-anchor="middle">&#934;</text>
+</svg>
